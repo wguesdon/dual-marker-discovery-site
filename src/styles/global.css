@@ -146,6 +146,12 @@ footer.foot b { color: var(--ink-2); }
         text-transform: uppercase; color: var(--accent); border: 1px solid var(--border);
         border-radius: 20px; padding: 0.2rem 0.6rem; }
 
+/* Work-in-progress banner. Pairs with the robots noindex tag in Base.astro: the deployed origin is
+   public, so a visitor must never mistake the skeleton for the finished submission. Remove both in
+   the commit that lands the real content. */
+.wip { background: #7a5410; color: #fff8e6; text-align: center; padding: 0.45rem 1rem;
+       font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.03em; }
+
 /* Skeleton marker. Every TODO block on the site uses this, so an unfinished page is obvious at a
    glance and nothing ships half-written by accident. Delete the class when the content lands. */
 .todo { background: repeating-linear-gradient(45deg, #fff8e6, #fff8e6 10px, #fff3d6 10px, #fff3d6 20px);
