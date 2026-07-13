@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+
 const title = 'The report — Dual-marker discovery';
-const description = 'TODO: the full scientific report, abstract to limitations.';
+const description =
+  'Patient-robust discovery of combinatorial cell-surface targets in prostate cancer. The full scientific report: methods, results, robustness, and limitations.';
 ---
 <Base title={title} description={description} page="report">
   <section class="hero" style="padding-bottom:0.6rem">
@@ -9,17 +11,22 @@ const description = 'TODO: the full scientific report, abstract to limitations.'
       <p class="eyebrow">The science</p>
       <h1>The report</h1>
       <p class="lede">
-        A full scientific paper in the usual structure: abstract, introduction, methods, results,
-        discussion, and honest limitations. Every number is computed from a committed table.
+        Patient-robust discovery of combinatorial cell-surface targets in prostate cancer. Abstract,
+        background, data, methods, results, robustness, and limitations. Every number in it is read from
+        a committed table, and the report redraws its own figures from those tables with no network call
+        and no model call.
       </p>
       <div class="embed-bar">
         <a class="btn primary" href="/report.html" target="_blank" rel="noopener">Open the report in a new tab &rarr;</a>
-        <span class="pill">TODO: review provenance</span>
+        <span class="pill">Revised twice under adversarial review</span>
       </div>
-      <div class="todo">
-        <p><b>Wiring.</b> <code>public/report.html</code> is generated in the science repo by
-        <code>./render_report.sh</code> and copied here by <code>build_image.sh</code> in the app
-        repo. It is gitignored, so this page renders blank until the first build.</p>
+      <div class="callout">
+        <p>
+          Read the limitations. They are not boilerplate: the malignant label is the cohort authors' own
+          signature call and partly overlaps the panel being scored, the healthy reference is restricted
+          to a single assay chemistry, the coverage floor's confidence interval is wide, and the NOT gate
+          returned nothing. All of that is in there, stated by the report rather than discovered by you.
+        </p>
       </div>
     </div>
   </section>

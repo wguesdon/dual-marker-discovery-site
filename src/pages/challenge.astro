@@ -1,7 +1,14 @@
 ---
 import Base from '../layouts/Base.astro';
+import d from '../data/site_data.json';
+import { pct, count, cellType } from '../lib/fmt.js';
+
 const title = 'Challenge & data — Dual-marker discovery';
-const description = 'TODO: the hackathon brief, the single-cell atlases, and the biological question.';
+const description =
+  'The biological problem, the single-cell atlases behind the scan, and how a candidate marker pair is actually scored.';
+
+const tumor = d.datasets.find((x) => x.dataset.includes('tumor'));
+const healthy = d.datasets.find((x) => x.dataset.includes('tabula'));
 ---
 <Base title={title} description={description} page="challenge">
   <section class="hero" style="padding-bottom:0.6rem">
@@ -9,33 +16,142 @@ const description = 'TODO: the hackathon brief, the single-cell atlases, and the
       <p class="eyebrow">The setup</p>
       <h1>The challenge and the data</h1>
       <p class="lede">
-        TODO: what the hackathon asked for, and which of the Gladstone examples this answers.
+        Find two surface markers that together separate prostate cancer from every healthy human cell
+        type, and make the claim checkable by requiring the method to rediscover a pair we already know
+        the answer to.
       </p>
     </div>
   </section>
 
   <section class="block">
     <div class="container narrow">
-      <h2>The brief</h2>
-      <div class="todo"><p><b>TODO.</b> From <code>docs/hackathon_brief.md</code> and
-      <code>docs/judging_criteria.md</code> in the science repo.</p></div>
-
       <h2>The biology</h2>
-      <div class="todo"><p><b>TODO.</b> On-target off-tumor toxicity. Why single-antigen CAR-T,
-      engagers, and ADCs run out of road in solid tumors. Why prostate.</p></div>
-
-      <h2>The data</h2>
-      <div class="todo">
-        <p><b>TODO.</b> Name every source with its accession and size:</p>
-        <p>· the prostate tumor single-cell atlas</p>
-        <p>· the healthy human cell reference (CELLxGENE Census)</p>
-        <p>· the Human Protein Atlas surface and normal-tissue evidence</p>
-        <p>· PaxDb protein abundance</p>
-      </div>
+      <p>
+        Antigen-directed therapy in solid tumors runs into a wall that is not a targeting failure. It is
+        a targeting success against the wrong cell. A single tumor antigen is rarely absent from every
+        healthy tissue, so CAR-T, T-cell engagers, and antibody-drug conjugates that key on one antigen
+        carry real on-target, off-tumor risk. PSMA is a good prostate antigen and it is also in your
+        duodenum.
+      </p>
+      <p>
+        Requiring two conditions before a cell is engaged can recover the specificity that one antigen
+        cannot provide. Prostate is the natural test bed, because it has a combinatorial answer already
+        in hand: PSMA and PSCA are a preclinically validated split-signal AND-gate CAR. A scan that
+        cannot find that pair has not earned the right to nominate a new one.
+      </p>
 
       <h2>The question</h2>
-      <div class="todo"><p><b>TODO.</b> State it as a falsifiable question with a built-in positive
-      control, the way the science repo's PRD does.</p></div>
+      <div class="callout">
+        <p>
+          Across a curated panel of {d.study.n_panel_genes_scanned} cell-surface markers, which pairs
+          separate malignant prostate cells from every healthy human cell type, under AND logic or NOT
+          logic, when scored per patient rather than on pooled cells? And does the scan recover
+          PSMA-PSCA before it proposes anything new?
+        </p>
+      </div>
+
+      <h2>The data</h2>
+      <div class="tw">
+        <table class="fig">
+          <thead>
+            <tr>
+              <th>Source</th>
+              <th class="num">Cells</th>
+              <th class="num">Donors</th>
+              <th>What it contributes</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><b>Localised prostate tumor cohort</b><br /><span class="ct">hormone therapy naive adenocarcinoma</span></td>
+              <td class="num">{count(tumor?.n_cells)}</td>
+              <td class="num">{tumor?.n_donors}</td>
+              <td class="ct">
+                {count(d.study.n_malignant_cells)} malignant cells after doublet removal, plus
+                {' '}{count(d.study.n_benign_cells)} adjacent-benign prostate cells kept as a matched
+                same-patient control. Malignant identity is the authors' copy-number and signature call.
+              </td>
+            </tr>
+            <tr>
+              <td><b>Tabula Sapiens 2.0</b><br /><span class="ct">via CELLxGENE Census, release 2025-01-30</span></td>
+              <td class="num">{count(d.study.n_healthy_cells)}</td>
+              <td class="num">—</td>
+              <td class="ct">
+                The safety denominator. {d.study.n_healthy_celltypes} cell types across
+                {' '}{d.study.n_healthy_tissues} tissue labels, forming {d.study.n_healthy_populations}
+                {' '}donor-replicated tissue-by-cell-type populations. Restricted to the 10x 3' v3 assay to
+                match the tumor chemistry, because a raw-count positivity threshold is not comparable
+                across assays.
+              </td>
+            </tr>
+            <tr>
+              <td><b>Human Protein Atlas</b></td>
+              <td class="num">—</td>
+              <td class="num">—</td>
+              <td class="ct">
+                Subcellular localization and normal-tissue RNA, used to qualify surface accessibility and
+                cross-check the normal-tissue liabilities found in the single-cell data.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>How a pair is scored</h2>
+      <ol class="steps">
+        <li>
+          <b>Positivity is per cell, not per sample.</b> A cell counts as positive for a marker at a raw
+          count of at least {d.study.k_threshold}. The threshold is swept for sensitivity rather than
+          asserted. Nothing is averaged into a pseudo-bulk value first.
+        </li>
+        <li>
+          <b>Coverage is computed within each patient, never pooled.</b> For markers A and B, AND
+          coverage is the fraction of that patient's malignant cells positive for both. The
+          {' '}{d.study.n_patients_scored} per-patient scores are then summarized by their median and,
+          more importantly, their lower decile: the floor, the worst-served patient. A donor with
+          thousands of cells cannot carry a pair on its own.
+        </li>
+        <li>
+          <b>Every pair is held against three references.</b> Malignant coverage; the matched benign
+          prostate from the same cohort, so a pair expressed across the whole gland is penalised rather
+          than rewarded; and the worst-case co-positive fraction across the healthy atlas.
+        </li>
+        <li>
+          <b>The healthy side is made donor-robust.</b> Within each tissue-by-cell-type population the
+          fraction is computed per donor and summarized by the median across donors, keeping only
+          populations with at least two donors. One unusual donor, or a population of nine cells, cannot
+          set a worst case. Every liability we report carries its supporting donor and cell counts.
+        </li>
+        <li>
+          <b>Confounded pairs are excluded, not quietly ranked.</b> The cohort's malignant label is built
+          partly from expression signatures containing HPN and EPCAM. Any pair containing those genes is
+          scoring against a label it helped define, so it is flagged, held off the frontier, and never
+          nominated.
+        </li>
+        <li>
+          <b>Ranking is a Pareto frontier, not a single score.</b> Coverage floor against worst
+          extra-prostatic liability. No weighting of one against the other is invented, because the
+          clinically acceptable trade is not ours to assert. Only surface-accessible markers can be
+          nominated.
+        </li>
+      </ol>
+
+      <h2>Why liabilities exclude the prostate</h2>
+      <p>
+        Both statistics are computed and both are kept in the tables. The figures lead with the
+        extra-prostatic one, because normal prostate expression may be clinically tolerable in selected
+        advanced-disease contexts where the gland is already being treated, whereas every other organ is
+        dose-limiting. The stricter all-organ number is one column away and is not hidden.
+      </p>
+
+      <h2>What would falsify this</h2>
+      <p>
+        If the scan had failed to recover PSMA-PSCA, the ranking behind it would carry no weight, and the
+        honest report would have been that the method does not work. The control is not decoration. It is
+        the reason the rest of the numbers are worth reading. The
+        {' '}<a href="/report">limitations section</a> lists what the control does not buy us, starting
+        with the fact that co-detected transcript is not co-expressed protein.
+      </p>
     </div>
   </section>
 </Base>

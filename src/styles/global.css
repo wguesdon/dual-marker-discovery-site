@@ -147,10 +147,32 @@ footer.foot b { color: var(--ink-2); }
         border-radius: 20px; padding: 0.2rem 0.6rem; }
 
 /* Work-in-progress banner. Pairs with the robots noindex tag in Base.astro: the deployed origin is
-   public, so a visitor must never mistake the skeleton for the finished submission. Remove both in
-   the commit that lands the real content. */
+   public, so a visitor must never mistake unfinished text for the finished submission. Remove both
+   when the report is final. */
 .wip { background: #7a5410; color: #fff8e6; text-align: center; padding: 0.45rem 1rem;
        font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.03em; }
+.wip a { color: #fff8e6; text-decoration: underline; }
+
+/* Data tables. Every figure in one of these is read from a committed table in the science repo, so
+   the numbers are set in a tabular monospace and never re-rounded by hand. */
+.tw { overflow-x: auto; margin: 1.4rem 0; }
+table.fig { border-collapse: collapse; width: 100%; font-size: 0.92rem;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+table.fig th { background: var(--surface-2); color: var(--navy); font-weight: 600;
+               text-align: left; padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--border);
+               font-size: 0.84rem; vertical-align: bottom; }
+table.fig th .sub { display: block; font-weight: 400; color: var(--ink-faint);
+                    font-size: 0.74rem; letter-spacing: 0; text-transform: none; }
+table.fig td { padding: 0.65rem 0.9rem; border-bottom: 1px solid var(--border); color: var(--ink);
+               vertical-align: top; }
+table.fig tr:last-child td { border-bottom: 0; }
+table.fig td.num, table.fig th.num { text-align: right; font-family: var(--mono);
+                                     font-variant-numeric: tabular-nums; white-space: nowrap; }
+table.fig th.num { text-align: right; }
+table.fig td.ct { color: var(--ink-2); font-size: 0.86rem; }
+table.fig tr.lead td { background: color-mix(in srgb, var(--vermillion) 6%, transparent); }
+table.fig tr.lead td.num { color: var(--vermillion); font-weight: 600; }
 
 /* Skeleton marker. Every TODO block on the site uses this, so an unfinished page is obvious at a
    glance and nothing ships half-written by accident. Delete the class when the content lands. */

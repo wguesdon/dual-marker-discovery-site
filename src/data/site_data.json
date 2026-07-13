@@ -1,0 +1,257 @@
+{
+  "generated_from": "dual-marker-discovery/results/tables",
+  "study": {
+    "n_malignant_cells": 3590,
+    "n_benign_cells": 16249,
+    "n_healthy_cells": 1025717,
+    "n_patients_scored": 18,
+    "n_benign_patients": 24,
+    "n_healthy_populations": 442,
+    "n_healthy_celltypes": 173,
+    "n_healthy_tissues": 65,
+    "n_panel_genes_scanned": 29,
+    "k_threshold": 1
+  },
+  "datasets": [
+    {
+      "dataset": "tumor_localised_pca",
+      "n_cells": 68322,
+      "n_donors": 24,
+      "panel_genes_found": 29
+    },
+    {
+      "dataset": "tabula_sapiens",
+      "n_cells": 1136218,
+      "n_donors": 24,
+      "panel_genes_found": 29
+    }
+  ],
+  "control": [
+    {
+      "entity": "FOLH1 (single)",
+      "kind": "single",
+      "tumor_median": 0.7390531,
+      "tumor_q10": 0.4959707170724869,
+      "worst_healthy_xprostate": 0.8504802,
+      "worst_xp_celltype": "enterocyte of epithelium proper of duodenum"
+    },
+    {
+      "entity": "PSCA (single)",
+      "kind": "single",
+      "tumor_median": 0.16233766,
+      "tumor_q10": 0.07281448058784,
+      "worst_healthy_xprostate": 0.94622433,
+      "worst_xp_celltype": "bladder urothelial cell"
+    },
+    {
+      "entity": "FOLH1 AND PSCA",
+      "kind": "AND_pair",
+      "tumor_median": 0.10323597,
+      "tumor_q10": 0.0536128152161836,
+      "worst_healthy_xprostate": 0.15254237,
+      "worst_xp_celltype": "enteroendocrine cell of small intestine"
+    }
+  ],
+  "negative_control": {
+    "frac_random_pairs_worse": 0.575,
+    "n_random_pairs": 200,
+    "and_gate_xprostate_reduction": 0.7936819599999999
+  },
+  "nominated": {
+    "pair": "FOLH1 + STEAP1",
+    "gate": "AND",
+    "tumor_median": 0.6872707,
+    "tumor_q10": 0.449725267291069,
+    "benign_prostate_median": 0.086097404,
+    "malignant_vs_benign": 0.6011733,
+    "worst_healthy_xprostate": 0.16666667,
+    "worst_xp_celltype": "mucus secreting cell",
+    "single_a_worst_xp": 0.8504802,
+    "single_b_worst_xp": 0.49558282,
+    "coverage_fold_vs_psma_psca": 6.657279434677662,
+    "on_surface_frontier": true
+  },
+  "surface_frontier": [
+    {
+      "marker_a": "STEAP2",
+      "marker_b": "TMPRSS2",
+      "gate": "AND",
+      "tumor_median": 0.92616755,
+      "tumor_q10": 0.8567099690437316,
+      "worst_healthy_xprostate": 0.5467964,
+      "worst_xp_tissue": "bladder organ",
+      "worst_xp_celltype": "bladder urothelial cell",
+      "malignant_vs_benign": 0.6442874
+    },
+    {
+      "marker_a": "STEAP1",
+      "marker_b": "STEAP2",
+      "gate": "AND",
+      "tumor_median": 0.85459507,
+      "tumor_q10": 0.722748464345932,
+      "worst_healthy_xprostate": 0.32668775,
+      "worst_xp_tissue": "lung",
+      "worst_xp_celltype": "respiratory goblet cell",
+      "malignant_vs_benign": 0.60155076
+    },
+    {
+      "marker_a": "STEAP1",
+      "marker_b": "CD46",
+      "gate": "AND",
+      "tumor_median": 0.8482089,
+      "tumor_q10": 0.7388589084148407,
+      "worst_healthy_xprostate": 0.448972,
+      "worst_xp_tissue": "bladder organ",
+      "worst_xp_celltype": "bladder urothelial cell",
+      "malignant_vs_benign": 0.5226454
+    },
+    {
+      "marker_a": "FOLH1",
+      "marker_b": "STEAP2",
+      "gate": "AND",
+      "tumor_median": 0.72646415,
+      "tumor_q10": 0.4844780176877976,
+      "worst_healthy_xprostate": 0.31578946,
+      "worst_xp_tissue": "respiratory system",
+      "worst_xp_celltype": "mucus secreting cell",
+      "malignant_vs_benign": 0.6353077
+    },
+    {
+      "marker_a": "FOLH1",
+      "marker_b": "STEAP1",
+      "gate": "AND",
+      "tumor_median": 0.6872707,
+      "tumor_q10": 0.449725267291069,
+      "worst_healthy_xprostate": 0.16666667,
+      "worst_xp_tissue": "respiratory system",
+      "worst_xp_celltype": "mucus secreting cell",
+      "malignant_vs_benign": 0.6011733
+    },
+    {
+      "marker_a": "STEAP2",
+      "marker_b": "TMEFF2",
+      "gate": "AND",
+      "tumor_median": 0.3538204,
+      "tumor_q10": 0.1010144919157028,
+      "worst_healthy_xprostate": 0.0952381,
+      "worst_xp_tissue": "eye",
+      "worst_xp_celltype": "retinal bipolar neuron",
+      "malignant_vs_benign": 0.33523643
+    },
+    {
+      "marker_a": "STEAP1",
+      "marker_b": "TMEFF2",
+      "gate": "AND",
+      "tumor_median": 0.34136453,
+      "tumor_q10": 0.0843448281288146,
+      "worst_healthy_xprostate": 0.05882353,
+      "worst_xp_tissue": "musculature",
+      "worst_xp_celltype": "epithelial cell",
+      "malignant_vs_benign": 0.32533157
+    },
+    {
+      "marker_a": "TMEFF2",
+      "marker_b": "CD276",
+      "gate": "AND",
+      "tumor_median": 0.07210393,
+      "tumor_q10": 0.0193138279020786,
+      "worst_healthy_xprostate": 0.05,
+      "worst_xp_tissue": "tongue",
+      "worst_xp_celltype": "taste receptor cell",
+      "malignant_vs_benign": 0.06792505
+    },
+    {
+      "marker_a": "GRPR",
+      "marker_b": "SLC34A1",
+      "gate": "AND",
+      "tumor_median": 0,
+      "tumor_q10": 0,
+      "worst_healthy_xprostate": 0.000047659898,
+      "worst_xp_tissue": "exocrine gland",
+      "worst_xp_celltype": "luminal epithelial cell of mammary gland",
+      "malignant_vs_benign": 0
+    }
+  ],
+  "evidence": [
+    {
+      "gene": "FOLH1",
+      "compartment": "surface",
+      "plasma_membrane": false,
+      "hpa_max_tissue": "duodenum",
+      "hpa_max_ntpm": 250.9,
+      "hpa_prostate_ntpm": 71.4
+    },
+    {
+      "gene": "PSCA",
+      "compartment": "surface",
+      "plasma_membrane": true,
+      "hpa_max_tissue": "stomach",
+      "hpa_max_ntpm": 3010.1,
+      "hpa_prostate_ntpm": 216.6
+    },
+    {
+      "gene": "STEAP1",
+      "compartment": "surface",
+      "plasma_membrane": false,
+      "hpa_max_tissue": "prostate",
+      "hpa_max_ntpm": 78.6,
+      "hpa_prostate_ntpm": 78.6
+    },
+    {
+      "gene": "STEAP2",
+      "compartment": "surface",
+      "plasma_membrane": false,
+      "hpa_max_tissue": "prostate",
+      "hpa_max_ntpm": 119.9,
+      "hpa_prostate_ntpm": 119.9
+    },
+    {
+      "gene": "TMEFF2",
+      "compartment": "surface",
+      "plasma_membrane": false,
+      "hpa_max_tissue": "prostate",
+      "hpa_max_ntpm": 34.3,
+      "hpa_prostate_ntpm": 34.3
+    },
+    {
+      "gene": "TMPRSS2",
+      "compartment": "membrane",
+      "plasma_membrane": true,
+      "hpa_max_tissue": "prostate",
+      "hpa_max_ntpm": 263.4,
+      "hpa_prostate_ntpm": 263.4
+    },
+    {
+      "gene": "GRPR",
+      "compartment": "surface",
+      "plasma_membrane": true,
+      "hpa_max_tissue": "pancreas",
+      "hpa_max_ntpm": 19.1,
+      "hpa_prostate_ntpm": 0.5
+    },
+    {
+      "gene": "CD276",
+      "compartment": "surface",
+      "plasma_membrane": false,
+      "hpa_max_tissue": "adipose tissue",
+      "hpa_max_ntpm": 26.8,
+      "hpa_prostate_ntpm": 15.7
+    },
+    {
+      "gene": "CD46",
+      "compartment": "surface",
+      "plasma_membrane": true,
+      "hpa_max_tissue": "parathyroid gland",
+      "hpa_max_ntpm": 286.1,
+      "hpa_prostate_ntpm": 149.6
+    },
+    {
+      "gene": "SLC34A1",
+      "compartment": "membrane",
+      "plasma_membrane": true,
+      "hpa_max_tissue": "kidney",
+      "hpa_max_ntpm": 145.2,
+      "hpa_prostate_ntpm": 0
+    }
+  ]
+}

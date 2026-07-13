@@ -1,7 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+
 const title = 'How I used Claude — Dual-marker discovery';
-const description = 'TODO: Claude Code and Claude Science across the pipeline, the report, and the adversarial audit.';
+const description =
+  'What Claude Code built, what it caught, where it was overruled, and what it made me retract. The disagreements are the interesting part.';
 ---
 <Base title={title} description={description} page="claude">
   <section class="hero" style="padding-bottom:0.6rem">
@@ -9,35 +11,140 @@ const description = 'TODO: Claude Code and Claude Science across the pipeline, t
       <p class="eyebrow">The process</p>
       <h1>How I used Claude</h1>
       <p class="lede">
-        TODO: the honest account. Where Claude did the work, where it caught an error, and where it
-        was wrong and I overruled it.
+        A tool that is overruled is more informative than one that is rubber-stamped. So this page leads
+        with the disagreements: the times Claude was wrong, the times it caught me, and the two occasions
+        it forced a published claim to be withdrawn.
       </p>
     </div>
   </section>
 
   <section class="block">
     <div class="container narrow">
-      <div class="todo">
-        <p><b>Source.</b> <code>docs/claude_tooling_log.md</code> in the science repo is the evidence
-        trail. This page is its readable form.</p>
-        <p><b>Assets.</b> Screenshots go in <code>public/claude-science/</code>, as the satmut site
-        did (<code>cs1_literature.png</code>, <code>cs2_connectors.png</code>, and so on).</p>
+      <div class="callout">
+        <p>
+          <b>What was actually used.</b> Claude Code, including its subagents, did the work on this
+          project. Five Claude Science workbench tasks were scoped in
+          <span class="data">claude_life_science/</span> and were <b>not run</b>; nothing on this site or
+          in the report depends on them. The full handoff record is in
+          <span class="data">docs/claude_tooling_log.md</span>.
+        </p>
       </div>
 
-      <h2>Claude Code</h2>
+      <h2>The two retractions</h2>
+      <p>
+        Both came from adversarial review, and both changed the result. Neither was cosmetic.
+      </p>
+
+      <h3>A headline number turned out to be an artifact of 39 cells</h3>
+      <p>
+        A reviewer flagged that mixing single-cell assays under one raw-count positivity threshold could
+        confound the normal-tissue liabilities. Rather than argue the point, Claude Code went to the raw
+        data and counted: the healthy reference pulled from Tabula Sapiens was 90% 10x 3' v3, but 3.7%
+        Smart-seq2. Recomputing every headline liability assay-matched and donor-robust showed that the
+        published worst liability for PSMA x STEAP1, <span class="data">0.28</span>, was an artifact of
+        <b>39 Smart-seq2 cells from a single donor</b>. Assay-matched and donor-robust, across 5 donors,
+        it is <span class="data">0.17</span>.
+      </p>
+      <p>
+        The correction cut both ways, which is why it is worth stating. The finding got stronger. The
+        negative-control statistic got weaker: the fraction of random surface pairs the benchmark beats
+        fell from 80% to 58%. Both numbers were updated.
+      </p>
+
+      <h3>The pair that was beating our lead was cheating</h3>
+      <p>
+        A second review alleged that HPN and EPCAM leak into the cohort's malignant-cell label. The label
+        is built from the Liu and Wallace prostate-cancer expression signatures plus CopyKAT aneuploidy,
+        so any panel gene inside those signatures would be scoring against a label it helped define. A
+        crude check was inconclusive, confounded by tumor purity, so Claude Code delegated the decisive
+        question to a subagent, which read the study's own signature CSVs from the authors' GitHub.
+      </p>
+      <p>
+        HPN is in both signatures. EPCAM is in Liu. FOLH1, STEAP1, and PSCA are in neither. Consequence:
+        <b>49 pairs were excluded as confounded, and STEAP1 x HPN, previously reported as a co-lead, was
+        demoted.</b> With the leaked pair removed, PSMA x STEAP1 became Pareto-non-dominated. The pair
+        that had been dominating our lead was the contaminated one.
+      </p>
+
+      <h2>Where Claude was wrong</h2>
+      <p>
+        One of Claude Code's own research subagents reported that Python 3.13 would be fine for the
+        stack. It was not. A <span class="data">numpy&gt;=2.2</span> constraint dragged in an ancient
+        <span class="data">numba</span> 0.53.1 that supports neither 3.11 nor 3.13, and the environment
+        would not resolve. Claude Code caught its own agent's claim, pinned Python 3.11 with
+        <span class="data">numpy&lt;2</span>, and the wheels resolved. An agent's confident answer is
+        still just an answer.
+      </p>
+
+      <h2>Where Claude overruled a data source</h2>
+      <p>
+        The Human Protein Atlas immunofluorescence localization calls PSMA, STEAP1, STEAP2, and CD276
+        <i>not plasma membrane</i>. These are false negatives for antigens with binders in the clinic.
+        Claude Code therefore refused to use HPA localization as a hard surface filter, and used curated
+        membrane topology instead, keeping HPA only for what it is good for: demoting prostein (SLC45A3),
+        which really is intracellular and vesicular, out of nomination. A database being authoritative
+        does not make it right about a specific gene.
+      </p>
+
+      <h2>Where I overruled Claude</h2>
+      <p>
+        The safety metric was, at first, purely extra-prostatic: how much of the gate fires outside the
+        prostate. I flagged that this would happily pass a marker expressed across <i>every</i> prostate
+        cell, malignant and benign alike. Such a target destroys the whole gland and is not
+        tumor-specific at all, and the metric could not see it.
+      </p>
+      <p>
+        That added the <b>matched benign-prostate control</b>: adjacent-benign epithelium from the same
+        patients, so a nomination must separate malignant from benign prostate and not merely from other
+        organs. It is now one of the four things this work claims as a contribution, and it exists because
+        the metric was wrong and a human said so.
+      </p>
+
+      <h2>What Claude built</h2>
       <ol class="steps">
-        <li><b>TODO step.</b> What it built.</li>
-        <li><b>TODO step.</b> What it caught.</li>
-        <li><b>TODO step.</b> What it got wrong.</li>
+        <li>
+          <b>Chose the indication.</b> Compared prostate, ovarian, and colorectal against the constraints,
+          verified the current clinical programs by web search, and landed on prostate as the only solid
+          tumor carrying a rediscoverable AND-gate positive control.
+        </li>
+        <li>
+          <b>Swapped the discovery cohort before a line of analysis was written.</b> Three read-only
+          Explore agents ran in parallel to verify data access. They found the planned HuPSA set was a
+          3.8 GB Seurat object needing conversion, while a 24-patient CELLxGENE atlas was a ready-annotated
+          h5ad. The plan changed to fit the data.
+        </li>
+        <li>
+          <b>Read the data rather than assuming it.</b> Inspected the tumor object's own annotations
+          instead of guessing a malignant definition, which surfaced the authors' copy-number and
+          signature call and replaced a much weaker "luminal cells are malignant" proxy.
+        </li>
+        <li>
+          <b>Removed doublets before scoring, not after.</b> Two cells captured as one would fake exactly
+          the co-expression an AND gate looks for. Claude Code built a Python to R and back handoff into a
+          Bioconductor scDblFinder container under rootless Podman. It removed 4.8% of cells, and
+          re-scoring on the singlets moved the nominated pair's coverage by at most one percentage point,
+          so the finding is not a doublet artifact.
+        </li>
+        <li>
+          <b>Rejected a pipeline for being unfinished.</b> Evaluated nf-core/scdownstream, found it
+          pre-release with functional code only on <span class="data">dev</span>, and documented it as the
+          future path rather than building on it.
+        </li>
+        <li>
+          <b>Verified every citation against a primary source.</b> A subagent confirmed the tumor atlas is
+          now published in Cancer Research, and that ABBV-969, the dual PSMA/STEAP1 conjugate a reviewer
+          raised, binds either antigen and so is OR-like. That verification is why the report narrows its
+          own novelty claim to the AND framing rather than the pair.
+        </li>
       </ol>
 
-      <h2>Claude Science</h2>
-      <div class="todo"><p><b>TODO.</b> The workbench tasks in
-      <code>claude_life_science/</code> and what each one returned.</p></div>
-
-      <h2>The adversarial audit</h2>
-      <div class="todo"><p><b>TODO.</b> The claims that did not survive review, and what replaced
-      them. This section is the one that earns trust. Do not skip it.</p></div>
+      <h2>The record</h2>
+      <p>
+        Every handoff above is logged with a date and an outcome in
+        <span class="data">docs/claude_tooling_log.md</span> in the science repository, including the ones
+        that went nowhere. The <a href="/report">report</a> is where the claims live, and it carries the
+        corrections these reviews forced.
+      </p>
     </div>
   </section>
 </Base>
