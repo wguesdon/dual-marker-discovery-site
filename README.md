@@ -39,12 +39,15 @@ same-origin layout of production is reproduced locally. Override with `AGENT_ORI
 | `/` | Overview and headline result | skeleton |
 | `/challenge` | The hackathon, the dataset, the biological question | skeleton |
 | `/claude` | How Claude Code and Claude Science were used | skeleton |
-| `/report` | The full scientific report (embedded) | wired, needs `public/report.html` |
-| `/explore` | The interactive marker-pair explorer (embedded) | wired, needs `public/explorer.html` |
-| `/ask` | The grounded Claude assistant (embedded from the app) | wired |
+| `/report` | The full scientific report (embedded) | live |
+| `/explore` | Explore with Claude: the gated app, embedded | live |
+
+There is one tool page, not two. `/explore` embeds the gated app, which is the pair explorer and the
+grounded assistant in a single view. A separate public explorer page would duplicate that panel and
+would have to serve the dataset unauthenticated to be worth anything, which defeats the access code.
 
 ## Generated assets
 
-`public/report.html` and `public/explorer.html` are produced in `dual-marker-discovery` and copied
-here by `build_image.sh` in the app repo. They are gitignored: they are build outputs, not source.
-Until the first build, `/report` and `/explore` embed a blank frame.
+`public/report.html` is produced in `dual-marker-discovery` and copied here by `build_image.sh` in
+the app repo. It is gitignored: it is a build output, not source. Until the first build, `/report`
+embeds a blank frame.

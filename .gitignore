@@ -18,5 +18,3 @@ SESSION_SUMMARY.md
 
 # Artifacts copied in from the science repo at build time, not source
 public/report.html
-public/explorer.html
-public/pairs/
