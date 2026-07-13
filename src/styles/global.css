@@ -1,0 +1,155 @@
+/* Dual-marker discovery — showcase site theme.
+   Ported from the reading-dna-base-by-base design system. The palette below is the one knob to
+   turn if this project wants its own identity; every rule under it is structural. */
+
+:root {
+  --navy: #0a0f29;
+  --blue: #1e4fa3;
+  --blue-bright: #3070b3;
+  --vermillion: #c9542b;
+  --ground: #fbfcfe;
+  --surface: #ffffff;
+  --surface-2: #f2f5fb;
+  --border: #dbe2ef;
+  --ink: #161c2f;
+  --ink-2: #515a70;
+  --ink-faint: #8b93a7;
+  --accent: var(--blue);
+
+  --mono: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --measure: 68ch;
+  --radius: 12px;
+  --shadow: 0 1px 2px rgba(10, 15, 41, 0.04), 0 8px 28px rgba(10, 15, 41, 0.06);
+}
+
+/* Dark mode is off site-wide: the report and the figures are light and need a light surface. */
+:root[data-theme="light"] {
+  --navy: #0a0f29; --ground: #fbfcfe; --surface: #fff; --surface-2: #f2f5fb;
+  --border: #dbe2ef; --ink: #161c2f; --ink-2: #515a70; --ink-faint: #8b93a7; --accent: var(--blue);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+body {
+  margin: 0;
+  font-family: var(--sans);
+  color: var(--ink);
+  background: var(--ground);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.container { max-width: 1060px; margin: 0 auto; padding: 0 1.4rem; }
+.narrow { max-width: 760px; }
+
+/* Nav */
+.nav {
+  position: sticky; top: 0; z-index: 30;
+  background: color-mix(in srgb, var(--ground) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--border);
+}
+.nav-inner { display: flex; align-items: center; gap: 1.4rem; height: 60px; }
+.brand { font-weight: 700; color: var(--navy); letter-spacing: -0.01em; margin-right: auto;
+         display: inline-flex; align-items: center; gap: 0.5rem; }
+.brand:hover { text-decoration: none; }
+.brand .mark { font-size: 1.15rem; }
+.nav a.link { font-size: 0.92rem; color: var(--ink-2); }
+.nav a.link:hover { color: var(--accent); text-decoration: none; }
+.nav a.link[aria-current="page"] { color: var(--navy); font-weight: 600;
+  border-bottom: 2px solid var(--accent); padding-bottom: 2px; }
+@media (max-width: 680px) { .nav a.link { font-size: 0.82rem; } .nav-inner { gap: 0.85rem; } }
+
+/* Typography */
+h1, h2, h3 { color: var(--navy); letter-spacing: -0.015em; text-wrap: balance; }
+h1 { font-size: clamp(1.9rem, 4.5vw, 3rem); line-height: 1.08; margin: 0 0 0.9rem; }
+h2 { font-size: clamp(1.35rem, 2.6vw, 1.8rem); margin: 2.6rem 0 0.9rem;
+     border-bottom: 2px solid var(--blue); padding-bottom: 0.35rem; }
+h3 { font-size: 1.15rem; margin: 1.8rem 0 0.6rem; }
+p, li { max-width: var(--measure); }
+.eyebrow { font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.16em;
+           text-transform: uppercase; color: var(--accent); margin: 0 0 0.7rem; }
+.lede { font-size: 1.16rem; color: var(--ink-2); max-width: var(--measure); }
+
+section.block { padding: 1.2rem 0; }
+.hero { padding: 3.4rem 0 2.2rem; }
+
+/* Stat row */
+.stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin: 2.2rem 0; }
+@media (max-width: 680px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+        padding: 1.1rem 1.2rem; box-shadow: var(--shadow); }
+.stat .n { font-family: var(--mono); font-size: 1.7rem; font-weight: 600; color: var(--navy);
+           font-variant-numeric: tabular-nums; line-height: 1; }
+.stat .l { font-size: 0.82rem; color: var(--ink-2); margin-top: 0.4rem; }
+
+/* Cards */
+.cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.1rem; margin: 1.6rem 0; }
+@media (max-width: 680px) { .cards { grid-template-columns: 1fr; } }
+.card { display: block; background: var(--surface); border: 1px solid var(--border);
+        border-radius: var(--radius); padding: 1.3rem 1.4rem; box-shadow: var(--shadow);
+        color: inherit; transition: transform 0.12s, border-color 0.12s; }
+.card:hover { text-decoration: none; transform: translateY(-2px); border-color: var(--accent); }
+.card .k { font-family: var(--mono); font-size: 0.72rem; letter-spacing: 0.1em;
+           text-transform: uppercase; color: var(--accent); }
+.card h3 { margin: 0.5rem 0 0.4rem; }
+.card p { color: var(--ink-2); font-size: 0.95rem; margin: 0; }
+
+/* Buttons */
+.btnrow { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 1.6rem 0; }
+.btn { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.96rem;
+       padding: 0.65rem 1.2rem; border-radius: 9px; border: 1px solid var(--accent); }
+.btn.primary { background: var(--accent); color: #fff; }
+.btn.primary:hover { background: var(--blue-bright); text-decoration: none; }
+.btn.ghost { color: var(--accent); background: transparent; }
+.btn.ghost:hover { background: var(--surface-2); text-decoration: none; }
+
+/* Callout */
+.callout { background: var(--surface-2); border-left: 3px solid var(--accent);
+           border-radius: 8px; padding: 1rem 1.2rem; margin: 1.4rem 0; }
+.callout p { margin: 0; color: var(--ink); }
+.callout.result { border-left-color: var(--vermillion); }
+
+/* Inline data emphasis */
+.data { font-family: var(--mono); color: var(--navy); font-weight: 600;
+        background: var(--surface-2); padding: 0.05em 0.35em; border-radius: 4px;
+        font-variant-numeric: tabular-nums; }
+
+/* Steps / numbered process */
+.steps { list-style: none; padding: 0; margin: 1.2rem 0; counter-reset: s; }
+.steps > li { position: relative; padding: 0.4rem 0 1.1rem 3rem; counter-increment: s;
+              border-left: 2px solid var(--border); margin-left: 1rem; max-width: none; }
+.steps > li::before { content: counter(s); position: absolute; left: -1.05rem; top: 0.2rem;
+  width: 2.05rem; height: 2.05rem; border-radius: 50%; background: var(--accent); color: #fff;
+  font-family: var(--mono); font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.steps > li:last-child { border-left-color: transparent; }
+.steps b { color: var(--navy); }
+
+/* Embed frame */
+.embed-bar { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;
+             padding: 0.9rem 0 1rem; }
+.embed { width: 100%; height: 82vh; min-height: 620px; border: 1px solid var(--border);
+         border-radius: var(--radius); background: var(--surface); box-shadow: var(--shadow); }
+
+/* Footer */
+footer.foot { margin-top: 3.5rem; border-top: 1px solid var(--border); }
+footer.foot .fi { padding: 1.6rem 0 2.4rem; color: var(--ink-faint); font-size: 0.86rem; }
+footer.foot b { color: var(--ink-2); }
+
+.pill { display: inline-block; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.08em;
+        text-transform: uppercase; color: var(--accent); border: 1px solid var(--border);
+        border-radius: 20px; padding: 0.2rem 0.6rem; }
+
+/* Skeleton marker. Every TODO block on the site uses this, so an unfinished page is obvious at a
+   glance and nothing ships half-written by accident. Delete the class when the content lands. */
+.todo { background: repeating-linear-gradient(45deg, #fff8e6, #fff8e6 10px, #fff3d6 10px, #fff3d6 20px);
+        border: 1px dashed #d9a441; border-radius: 8px; padding: 0.8rem 1rem; margin: 1.2rem 0;
+        font-family: var(--mono); font-size: 0.82rem; color: #7a5410; }
+.todo p { margin: 0.2rem 0; color: inherit; max-width: none; }
+.todo b { color: #5c3f0c; }

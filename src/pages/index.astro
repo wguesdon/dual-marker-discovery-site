@@ -1,0 +1,83 @@
+---
+import Base from '../layouts/Base.astro';
+const title = 'Dual-marker discovery — combinatorial surface-marker targets for prostate cancer';
+const description = 'TODO: one sentence, the headline result. Search public single-cell data for pairs of surface proteins that separate prostate cancer from every healthy human cell type.';
+---
+<Base title={title} description={description} page="home">
+  <section class="hero">
+    <div class="container narrow">
+      <p class="eyebrow">Built with Claude: Life Sciences hackathon<br />Research track · 2026</p>
+      <h1>TODO: the headline claim, in one sentence, with a number in it.</h1>
+      <p class="lede">
+        TODO: the lede. Three or four sentences. What was done, what came out, and why the reader
+        should believe it. Draw from the README of the science repo and cut it to the bone.
+      </p>
+      <div class="btnrow">
+        <a class="btn primary" href="/ask">Run the live Claude agent &rarr;</a>
+        <a class="btn ghost" href="/explore">Explore the marker pairs</a>
+        <a class="btn ghost" href="/claude">See how Claude was used</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="stats">
+        <div class="stat"><div class="n">—</div><div class="l">TODO stat 1</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">TODO stat 2</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">TODO stat 3</div></div>
+        <div class="stat"><div class="n">—</div><div class="l">TODO stat 4</div></div>
+      </div>
+      <div class="todo">
+        <p><b>Skeleton.</b> Four headline numbers go in the row above. The satmut site used the
+        zero-shot correlation, the ClinVar rank, the substitution count, and the atlas-wide rank.</p>
+        <p>Candidates here: patients scanned, surface pairs tested, the positive-control worst-case
+        drop, and the co-lead coverage multiple.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container narrow">
+      <h2>The idea</h2>
+      <div class="todo"><p><b>TODO.</b> The AND gate and the NOT gate, in plain language. Why two
+      markers recover specificity that one cannot.</p></div>
+
+      <h2>The positive control</h2>
+      <div class="todo"><p><b>TODO.</b> PSMA-PSCA recovered blind. What it means that the scan finds
+      it without being told.</p></div>
+
+      <h2>The result</h2>
+      <div class="callout result">
+        <p>TODO: the payload. The pair or pairs that improve on the control, with their numbers.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container">
+      <div class="cards">
+        <a class="card" href="/challenge">
+          <span class="k">The setup</span>
+          <h3>Challenge &amp; data</h3>
+          <p>The hackathon brief, the single-cell atlases, and the biological question.</p>
+        </a>
+        <a class="card" href="/claude">
+          <span class="k">The process</span>
+          <h3>How I used Claude</h3>
+          <p>Claude Code and Claude Science across the pipeline, the report, and the audit.</p>
+        </a>
+        <a class="card" href="/report">
+          <span class="k">The science</span>
+          <h3>The report</h3>
+          <p>Abstract, methods, results, discussion, and the limitations stated plainly.</p>
+        </a>
+        <a class="card" href="/ask">
+          <span class="k">The assistant</span>
+          <h3>Ask the data</h3>
+          <p>A grounded Claude agent with tools over the study's committed tables.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>

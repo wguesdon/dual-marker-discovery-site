@@ -1,0 +1,43 @@
+---
+import Base from '../layouts/Base.astro';
+const title = 'How I used Claude — Dual-marker discovery';
+const description = 'TODO: Claude Code and Claude Science across the pipeline, the report, and the adversarial audit.';
+---
+<Base title={title} description={description} page="claude">
+  <section class="hero" style="padding-bottom:0.6rem">
+    <div class="container narrow">
+      <p class="eyebrow">The process</p>
+      <h1>How I used Claude</h1>
+      <p class="lede">
+        TODO: the honest account. Where Claude did the work, where it caught an error, and where it
+        was wrong and I overruled it.
+      </p>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="container narrow">
+      <div class="todo">
+        <p><b>Source.</b> <code>docs/claude_tooling_log.md</code> in the science repo is the evidence
+        trail. This page is its readable form.</p>
+        <p><b>Assets.</b> Screenshots go in <code>public/claude-science/</code>, as the satmut site
+        did (<code>cs1_literature.png</code>, <code>cs2_connectors.png</code>, and so on).</p>
+      </div>
+
+      <h2>Claude Code</h2>
+      <ol class="steps">
+        <li><b>TODO step.</b> What it built.</li>
+        <li><b>TODO step.</b> What it caught.</li>
+        <li><b>TODO step.</b> What it got wrong.</li>
+      </ol>
+
+      <h2>Claude Science</h2>
+      <div class="todo"><p><b>TODO.</b> The workbench tasks in
+      <code>claude_life_science/</code> and what each one returned.</p></div>
+
+      <h2>The adversarial audit</h2>
+      <div class="todo"><p><b>TODO.</b> The claims that did not survive review, and what replaced
+      them. This section is the one that earns trust. Do not skip it.</p></div>
+    </div>
+  </section>
+</Base>

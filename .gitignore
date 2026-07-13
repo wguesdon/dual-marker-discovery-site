@@ -1,0 +1,22 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# environment
+.env
+.env.*
+
+# OS / editor
+.DS_Store
+*.local.md
+
+# Session log (kept local, not committed)
+SESSION_SUMMARY.md
+
+# Artifacts copied in from the science repo at build time, not source
+public/report.html
+public/explorer.html
+public/pairs/

@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+const title = 'The report — Dual-marker discovery';
+const description = 'TODO: the full scientific report, abstract to limitations.';
+---
+<Base title={title} description={description} page="report">
+  <section class="hero" style="padding-bottom:0.6rem">
+    <div class="container">
+      <p class="eyebrow">The science</p>
+      <h1>The report</h1>
+      <p class="lede">
+        A full scientific paper in the usual structure: abstract, introduction, methods, results,
+        discussion, and honest limitations. Every number is computed from a committed table.
+      </p>
+      <div class="embed-bar">
+        <a class="btn primary" href="/report.html" target="_blank" rel="noopener">Open the report in a new tab &rarr;</a>
+        <span class="pill">TODO: review provenance</span>
+      </div>
+      <div class="todo">
+        <p><b>Wiring.</b> <code>public/report.html</code> is generated in the science repo by
+        <code>./render_report.sh</code> and copied here by <code>build_image.sh</code> in the app
+        repo. It is gitignored, so this page renders blank until the first build.</p>
+      </div>
+    </div>
+  </section>
+  <section class="block">
+    <div class="container">
+      <iframe class="embed" src="/report.html" title="Scientific report" loading="lazy"></iframe>
+    </div>
+  </section>
+</Base>

@@ -1,0 +1,46 @@
+---
+import '../styles/global.css';
+
+const { title, description, page } = Astro.props;
+const nav = [
+  { href: '/', label: 'Overview', key: 'home' },
+  { href: '/challenge', label: 'Challenge & data', key: 'challenge' },
+  { href: '/claude', label: 'How I used Claude', key: 'claude' },
+  { href: '/report', label: 'Report', key: 'report' },
+  { href: '/explore', label: 'Explore', key: 'explore' },
+  { href: '/ask', label: 'Ask the data', key: 'ask' },
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <nav class="nav">
+      <div class="container nav-inner">
+        <a class="brand" href="/"><span class="mark">🎯</span> Dual-marker discovery</a>
+        {nav.map((n) => (
+          <a class="link" href={n.href} aria-current={page === n.key ? 'page' : undefined}>{n.label}</a>
+        ))}
+      </div>
+    </nav>
+    <main>
+      <slot />
+    </main>
+    <footer class="foot">
+      <div class="container fi">
+        <b>Dual-marker discovery.</b> A submission for Built with Claude: Life Sciences, Research track,
+        2026. TODO: name the data sources here, as the satmut site does (single-cell atlases, the
+        Human Protein Atlas, PaxDb). Built with Claude Code and Claude Science.
+      </div>
+    </footer>
+  </body>
+</html>
