@@ -1,95 +1,27 @@
 ---
 import Base from '../layouts/Base.astro';
-import d from '../data/site_data.json';
-import { frac, cellType } from '../lib/fmt.js';
 
 const title = 'Explore with Claude — Dual-marker discovery';
 const description =
-  'Browse the Pareto frontier of surface-accessible marker pairs and ask a grounded Claude assistant about any of them. It answers only from the study\'s committed tables.';
-
-const front = d.surface_frontier;
-const n = d.nominated;
+  'Colour every tumor cell by which markers it carries, watch the AND gate appear, and ask a grounded Claude assistant about any pair. It answers only from the study\'s committed tables.';
 ---
 <Base title={title} description={description} page="explore">
-  <section class="hero" style="padding-bottom:0.6rem">
+  <section class="hero" style="padding:1.6rem 0 0.5rem">
     <div class="container">
       <p class="eyebrow">The tool</p>
-      <h1>Explore the frontier, and ask about what you see</h1>
-      <p class="lede">
-        The assistant answers from the study's committed tables, using tools over the markers, the pairs,
-        and the gate scores. It cannot tell you a number the tables do not contain, and it is built to say
-        so rather than guess. It is powered by Claude and is access-controlled.
+      <h1 style="font-size:clamp(1.5rem,3vw,2.1rem);margin-bottom:0.5rem">Visualize marker combinations, and explore them with Claude</h1>
+      <p class="lede" style="font-size:1.02rem">
+        Pick any two markers from the panel. Every cell in the tumor cohort is coloured by which it
+        carries, and the cells carrying <b>both</b> are the ones an AND gate would engage. Ask the
+        assistant about any marker or pair; it answers only from the study's committed tables.
+        <a href="/app" target="_blank" rel="noopener">Open full screen</a>.
       </p>
-      <div class="btnrow">
-        <a class="btn primary" href="/app" target="_blank" rel="noopener">Open in a new tab &rarr;</a>
-      </div>
     </div>
   </section>
 
-  <section class="block">
-    <div class="container narrow">
-      <h2>What to look at</h2>
-      <p>
-        Below is the surface-accessible Pareto frontier: the {front.length} pairs where no other clean
-        pair beats them on <i>both</i> coverage floor and worst-case healthy liability. The frontier is a
-        trade-off, not a ranking, which is the point. Nothing here tells you how much coverage a
-        clinician should trade for how much liability, because that judgement is not in the data.
-      </p>
-
-      <div class="tw">
-        <table class="fig">
-          <thead>
-            <tr>
-              <th>Pair</th>
-              <th class="num">Coverage<br /><span class="sub">median</span></th>
-              <th class="num">Floor<br /><span class="sub">lower decile</span></th>
-              <th class="num">Worst healthy<br /><span class="sub">extra-prostatic</span></th>
-              <th>Where the liability sits</th>
-            </tr>
-          </thead>
-          <tbody>
-            {front.map((p) => {
-              const isLead =
-                (p.marker_a === 'FOLH1' && p.marker_b === 'STEAP1') ||
-                (p.marker_a === 'STEAP1' && p.marker_b === 'FOLH1');
-              return (
-                <tr class={isLead ? 'lead' : undefined}>
-                  <td>
-                    <b>{p.marker_a.replace('FOLH1', 'PSMA')} × {p.marker_b.replace('FOLH1', 'PSMA')}</b>
-                    {isLead && <span class="pill" style="margin-left:0.5rem">nominated</span>}
-                  </td>
-                  <td class="num">{frac(p.tumor_median)}</td>
-                  <td class="num">{frac(p.tumor_q10)}</td>
-                  <td class="num">{frac(p.worst_healthy_xprostate)}</td>
-                  <td class="ct">{cellType(p.worst_xp_celltype)}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-
-      <p>
-        Notice that the nominated pair is neither the top of the coverage column nor the bottom of the
-        liability column. Pairs above it cover more tumor and leak more; pairs below it leak less and
-        cover almost nothing. It was carried forward because it sits where those two curves cross and
-        because both of its antigens already have clinical-grade binders. Ask the assistant why, and it
-        will tell you from the tables.
-      </p>
-
-      <h2>Questions worth asking it</h2>
-      <ul>
-        <li>Why is {n.pair.replace('FOLH1', 'PSMA').replace(' + ', ' × ')} nominated when STEAP2 × TMPRSS2 covers far more tumor?</li>
-        <li>What is the worst healthy tissue for STEAP1 on its own, and what does the gate do to it?</li>
-        <li>Which pairs were excluded for label leakage, and why does that disqualify them?</li>
-        <li>Did any NOT gate work?</li>
-      </ul>
-    </div>
-  </section>
-
-  <section class="block">
+  <section class="block" style="padding-top:0">
     <div class="container">
-      <iframe class="embed" src="/app" title="Explore with Claude" loading="lazy" style="height:90vh"></iframe>
+      <iframe class="embed" src="/app" title="Explore with Claude" loading="eager" style="height:calc(100vh - 190px);min-height:680px"></iframe>
     </div>
   </section>
 </Base>
