@@ -103,6 +103,11 @@ section.block { padding: 1.2rem 0; }
 
 /* Buttons */
 .btnrow { display: flex; flex-wrap: wrap; gap: 0.8rem; margin: 1.6rem 0; }
+/* Secondary row: the source repositories. Smaller and quieter than the primary actions. */
+.btnrow.repos { margin-top: -0.6rem; gap: 0.5rem; }
+.btnrow.repos .btn { font-size: 0.86rem; padding: 0.45rem 0.85rem; border-color: var(--border);
+                     color: var(--ink-2); }
+.btnrow.repos .btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface-2); }
 .btn { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 600; font-size: 0.96rem;
        padding: 0.65rem 1.2rem; border-radius: 9px; border: 1px solid var(--accent); }
 .btn.primary { background: var(--accent); color: #fff; }
@@ -146,12 +151,6 @@ footer.foot b { color: var(--ink-2); }
         text-transform: uppercase; color: var(--accent); border: 1px solid var(--border);
         border-radius: 20px; padding: 0.2rem 0.6rem; }
 
-/* Work-in-progress banner. Pairs with the robots noindex tag in Base.astro: the deployed origin is
-   public, so a visitor must never mistake unfinished text for the finished submission. Remove both
-   when the report is final. */
-.wip { background: #7a5410; color: #fff8e6; text-align: center; padding: 0.45rem 1rem;
-       font-family: var(--mono); font-size: 0.74rem; letter-spacing: 0.03em; }
-.wip a { color: #fff8e6; text-decoration: underline; }
 
 /* Data tables. Every figure in one of these is read from a committed table in the science repo, so
    the numbers are set in a tabular monospace and never re-rounded by hand. */
@@ -174,10 +173,3 @@ table.fig td.ct { color: var(--ink-2); font-size: 0.86rem; }
 table.fig tr.lead td { background: color-mix(in srgb, var(--vermillion) 6%, transparent); }
 table.fig tr.lead td.num { color: var(--vermillion); font-weight: 600; }
 
-/* Skeleton marker. Every TODO block on the site uses this, so an unfinished page is obvious at a
-   glance and nothing ships half-written by accident. Delete the class when the content lands. */
-.todo { background: repeating-linear-gradient(45deg, #fff8e6, #fff8e6 10px, #fff3d6 10px, #fff3d6 20px);
-        border: 1px dashed #d9a441; border-radius: 8px; padding: 0.8rem 1rem; margin: 1.2rem 0;
-        font-family: var(--mono); font-size: 0.82rem; color: #7a5410; }
-.todo p { margin: 0.2rem 0; color: inherit; max-width: none; }
-.todo b { color: #5c3f0c; }

@@ -5,7 +5,7 @@ import { pct, count, cellType } from '../lib/fmt.js';
 
 const title = 'Challenge & data — Dual-marker discovery';
 const description =
-  'The biological problem, the single-cell atlases behind the scan, and how a candidate marker pair is actually scored.';
+  'The biological problem, the single-cell atlases behind the scan, and how a candidate marker pair is scored.';
 
 const tumor = d.datasets.find((x) => x.dataset.includes('tumor'));
 const healthy = d.datasets.find((x) => x.dataset.includes('tabula'));
@@ -16,28 +16,28 @@ const healthy = d.datasets.find((x) => x.dataset.includes('tabula'));
       <p class="eyebrow">The setup</p>
       <h1>The challenge and the data</h1>
       <p class="lede">
-        Find two surface markers that together separate prostate cancer from every healthy human cell
-        type, and make the claim checkable by requiring the method to rediscover a pair we already know
-        the answer to.
+        Identify pairs of cell-surface markers that discriminate malignant prostate cells from healthy
+        human cell types, and make the result checkable by requiring the method to recover a pair whose
+        answer is already known.
       </p>
     </div>
   </section>
 
   <section class="block">
     <div class="container narrow">
-      <h2>The biology</h2>
+      <h2>Background</h2>
       <p>
-        Antigen-directed therapy in solid tumors runs into a wall that is not a targeting failure. It is
-        a targeting success against the wrong cell. A single tumor antigen is rarely absent from every
-        healthy tissue, so CAR-T, T-cell engagers, and antibody-drug conjugates that key on one antigen
-        carry real on-target, off-tumor risk. PSMA is a good prostate antigen and it is also in your
-        duodenum.
+        A major limitation of antigen-directed therapy in solid tumors is on-target, off-tumor activity.
+        A single tumor antigen is rarely absent from every healthy tissue, so CAR-T, T-cell engagers, and
+        antibody-drug conjugates directed at one antigen carry a normal-tissue liability. PSMA, for
+        example, is a well-established prostate antigen and is also expressed in the duodenum.
       </p>
       <p>
-        Requiring two conditions before a cell is engaged can recover the specificity that one antigen
-        cannot provide. Prostate is the natural test bed, because it has a combinatorial answer already
-        in hand: PSMA and PSCA are a preclinically validated split-signal AND-gate CAR. A scan that
-        cannot find that pair has not earned the right to nominate a new one.
+        Combinatorial, logic-gated targeting requires two conditions before a cell is engaged and can
+        recover the specificity a single antigen cannot provide. Prostate adenocarcinoma is a suitable
+        test bed because a combinatorial benchmark exists: PSMA and PSCA are a preclinically validated
+        split-signal AND-gate CAR pair, so a systematic scan can be checked against a known answer before
+        it nominates anything new.
       </p>
 
       <h2>The question</h2>
@@ -107,50 +107,51 @@ const healthy = d.datasets.find((x) => x.dataset.includes('tabula'));
         <li>
           <b>Coverage is computed within each patient, never pooled.</b> For markers A and B, AND
           coverage is the fraction of that patient's malignant cells positive for both. The
-          {' '}{d.study.n_patients_scored} per-patient scores are then summarized by their median and,
-          more importantly, their lower decile: the floor, the worst-served patient. A donor with
-          thousands of cells cannot carry a pair on its own.
+          {' '}{d.study.n_patients_scored} per-patient scores are then summarized by their median and by
+          their lower decile, the coverage floor. Pooling would weight a pair by cell yield rather than by
+          patient, so a donor contributing thousands of cells could determine the score.
         </li>
         <li>
-          <b>Every pair is held against three references.</b> Malignant coverage; the matched benign
-          prostate from the same cohort, so a pair expressed across the whole gland is penalised rather
-          than rewarded; and the worst-case co-positive fraction across the healthy atlas.
+          <b>Each pair is evaluated against three references.</b> Malignant coverage; the matched benign
+          prostate from the same cohort, so that a pair expressed across the whole gland is penalised
+          rather than rewarded; and the worst-case co-positive fraction across the healthy reference.
         </li>
         <li>
-          <b>The healthy side is made donor-robust.</b> Within each tissue-by-cell-type population the
-          fraction is computed per donor and summarized by the median across donors, keeping only
-          populations with at least two donors. One unusual donor, or a population of nine cells, cannot
-          set a worst case. Every liability we report carries its supporting donor and cell counts.
+          <b>The normal-tissue reference is donor-robust.</b> Within each tissue-by-cell-type population the
+          fraction is computed per donor and summarized by the median across donors, retaining only
+          populations with at least two donors. A single donor, or a population of a few cells, therefore
+          cannot determine a worst case. Each reported liability carries its supporting donor and cell
+          counts.
         </li>
         <li>
-          <b>Confounded pairs are excluded, not quietly ranked.</b> The cohort's malignant label is built
-          partly from expression signatures containing HPN and EPCAM. Any pair containing those genes is
-          scoring against a label it helped define, so it is flagged, held off the frontier, and never
+          <b>Label-confounded pairs are excluded.</b> The cohort's malignant label is derived partly from
+          expression signatures containing HPN and EPCAM. A pair containing either gene is scored against
+          a label that gene helped define, so it is flagged as confounded, held off the frontier, and not
           nominated.
         </li>
         <li>
-          <b>Ranking is a Pareto frontier, not a single score.</b> Coverage floor against worst
-          extra-prostatic liability. No weighting of one against the other is invented, because the
-          clinically acceptable trade is not ours to assert. Only surface-accessible markers can be
-          nominated.
+          <b>Ranking is a Pareto frontier, not a composite score.</b> The two axes are the per-patient
+          coverage floor and the worst-case extra-prostatic liability. No weighting between them is
+          imposed, because the clinically acceptable trade-off is not established by this data. Only
+          surface-accessible markers are nominatable.
         </li>
       </ol>
 
       <h2>Why liabilities exclude the prostate</h2>
       <p>
-        Both statistics are computed and both are kept in the tables. The figures lead with the
-        extra-prostatic one, because normal prostate expression may be clinically tolerable in selected
-        advanced-disease contexts where the gland is already being treated, whereas every other organ is
-        dose-limiting. The stricter all-organ number is one column away and is not hidden.
+        Both statistics are computed and both are retained in the tables. The figures report the
+        extra-prostatic statistic. Normal prostate expression may be clinically tolerable in selected
+        advanced-disease contexts where the gland is already treated, whereas every other organ is
+        dose-limiting. The all-organ statistic is the stricter of the two and is given alongside it.
       </p>
 
-      <h2>What would falsify this</h2>
+      <h2>The falsification condition</h2>
       <p>
-        If the scan had failed to recover PSMA-PSCA, the ranking behind it would carry no weight, and the
-        honest report would have been that the method does not work. The control is not decoration. It is
-        the reason the rest of the numbers are worth reading. The
-        {' '}<a href="/report">limitations section</a> lists what the control does not buy us, starting
-        with the fact that co-detected transcript is not co-expressed protein.
+        The positive control is a pass/fail gate set before the scan is run. If PSMA-PSCA had not been
+        recovered, the scoring would be considered wrong and no nomination from it would be trustworthy.
+        Recovery does not, however, establish the safety of any pair: co-detected transcript is not
+        co-expressed protein. The <a href="/report/">limitations section</a> states what the control does
+        and does not support.
       </p>
     </div>
   </section>

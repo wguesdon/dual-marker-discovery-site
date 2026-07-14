@@ -2,12 +2,18 @@
 import '../styles/global.css';
 
 const { title, description, page } = Astro.props;
+// Trailing slashes are load-bearing. Astro emits each page as <name>/index.html, so a link to
+// "/challenge" makes the static server 307 to "/challenge/" — and behind a CDN that redirect carries
+// the ORIGIN's hostname, throwing the visitor off base-by-base.com and onto the Lightsail URL. Linking
+// straight to the canonical path means no redirect happens at all. The server also rewrites redirect
+// Location headers to be relative, so a hand-typed "/challenge" is safe too; this is the belt to that
+// pair of braces.
 const nav = [
   { href: '/', label: 'Overview', key: 'home' },
-  { href: '/challenge', label: 'Challenge & data', key: 'challenge' },
-  { href: '/claude', label: 'How I used Claude', key: 'claude' },
-  { href: '/report', label: 'Report', key: 'report' },
-  { href: '/explore', label: 'Explore with Claude', key: 'explore' },
+  { href: '/challenge/', label: 'Challenge & data', key: 'challenge' },
+  { href: '/claude/', label: 'How I used Claude', key: 'claude' },
+  { href: '/report/', label: 'Report', key: 'report' },
+  { href: '/explore/', label: 'Explore with Claude', key: 'explore' },
 ];
 ---
 <!doctype html>
@@ -38,8 +44,11 @@ const nav = [
     <footer class="foot">
       <div class="container fi">
         <b>Dual-marker discovery.</b> A submission for Built with Claude: Life Sciences, Research track,
-        2026. TODO: name the data sources here, as the satmut site does (single-cell atlases, the
-        Human Protein Atlas, PaxDb). Built with Claude Code and Claude Science.
+        2026. Discovery cohort: single-cell atlas of 24 localised prostate cancers (Apostolov et al.,
+        Cancer Research 2026). Normal-tissue reference: Tabula Sapiens 2.0, via the CELLxGENE Census,
+        release 2025-01-30. Replication cohort: HuPSA (Cheng et al. 2024). Protein-level evidence: the
+        Human Protein Atlas and GTEx. Analysis with Claude Code; literature and protein cross-checks with
+        Claude Science. Code and tables are open source under the MIT licence.
       </div>
     </footer>
   </body>

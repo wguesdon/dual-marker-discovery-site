@@ -1,32 +1,22 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const title = 'The report — Dual-marker discovery';
+const title = 'Report — Dual-marker discovery';
 const description =
-  'Patient-robust discovery of combinatorial cell-surface targets in prostate cancer. The full scientific report: methods, results, robustness, and limitations.';
+  'Per-patient discovery of combinatorial cell-surface targets in prostate cancer. Abstract, background, data, methods, results, robustness, and limitations.';
 ---
 <Base title={title} description={description} page="report">
   <section class="hero" style="padding-bottom:0.6rem">
     <div class="container">
       <p class="eyebrow">The science</p>
-      <h1>The report</h1>
+      <h1>Report</h1>
       <p class="lede">
-        Patient-robust discovery of combinatorial cell-surface targets in prostate cancer. Abstract,
-        background, data, methods, results, robustness, and limitations. Every number in it is read from
-        a committed table, and the report redraws its own figures from those tables with no network call
-        and no model call.
+        Per-patient discovery of combinatorial cell-surface targets in prostate cancer. Abstract,
+        background, data, methods, results, robustness, and limitations.
       </p>
       <div class="embed-bar">
         <a class="btn primary" href="/report.html" target="_blank" rel="noopener">Open the report in a new tab &rarr;</a>
-        <span class="pill">Revised twice under adversarial review</span>
-      </div>
-      <div class="callout">
-        <p>
-          Read the limitations. They are not boilerplate: the malignant label is the cohort authors' own
-          signature call and partly overlaps the panel being scored, the healthy reference is restricted
-          to a single assay chemistry, the coverage floor's confidence interval is wide, and the NOT gate
-          returned nothing. All of that is in there, stated by the report rather than discovered by you.
-        </p>
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery" target="_blank" rel="noopener">Main repository</a>
       </div>
     </div>
   </section>

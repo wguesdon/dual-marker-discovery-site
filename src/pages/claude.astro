@@ -1,20 +1,29 @@
 ---
 import Base from '../layouts/Base.astro';
 
-const title = 'How I used Claude — Dual-marker discovery';
+const title = 'How I use Claude Code and Claude Science — Dual-marker discovery';
 const description =
-  'What Claude Code built, what it caught, where it was overruled, and what it made me retract. The disagreements are the interesting part.';
+  'The practical setup: the global instruction file, the session summary that carries the method across sessions, how Claude Science tasks are organised and committed, and how every handoff is logged.';
 ---
 <Base title={title} description={description} page="claude">
-  <section class="hero" style="padding-bottom:0.6rem">
+  <section class="hero">
     <div class="container narrow">
-      <p class="eyebrow">The process</p>
-      <h1>How I used Claude</h1>
+      <p class="eyebrow">The method</p>
+      <h1>How I use Claude Code and Claude Science</h1>
       <p class="lede">
-        A tool that is overruled is more informative than one that is rubber-stamped. So this page leads
-        with the disagreements: the times Claude was wrong, the times it caught me, and the two occasions
-        it forced a published claim to be withdrawn.
+        The scientific decisions here are mine: the indication, the controls, the metric, the framing, and
+        what the result is permitted to claim. Claude Code is the instrument I execute with, configured to
+        work within those constraints. This page documents that configuration, which is the part that
+        transfers to another project.
       </p>
+      <div class="btnrow">
+        <a class="btn primary" href="/report.html" target="_blank" rel="noopener">Open the full report &rarr;</a>
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery" target="_blank" rel="noopener">Main repository</a>
+      </div>
+      <div class="btnrow repos">
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery-site" target="_blank" rel="noopener">Website repository</a>
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery-app" target="_blank" rel="noopener">App repository</a>
+      </div>
     </div>
   </section>
 
@@ -22,129 +31,275 @@ const description =
     <div class="container narrow">
       <div class="callout">
         <p>
-          <b>What was actually used.</b> Claude Code, including its subagents, did the work on this
-          project. Five Claude Science workbench tasks were scoped in
-          <span class="data">claude_life_science/</span> and were <b>not run</b>; nothing on this site or
-          in the report depends on them. The full handoff record is in
-          <span class="data">docs/claude_tooling_log.md</span>.
+          Rule 2 of this project defines the division of labour: <i>the human sets strategy and report
+          organisation; the LLM executes, verifies, and reports faithfully what actually happened.</i> The
+          configuration described below implements that rule.
         </p>
       </div>
 
-      <h2>The two retractions</h2>
+      <h2 id="claude-md">1. The global instruction file</h2>
       <p>
-        Both came from adversarial review, and both changed the result. Neither was cosmetic.
+        <span class="data">CLAUDE.md</span> is read at the start of every session, in every project. It
+        contains no project knowledge. It holds the standing constraints that do not vary: the languages,
+        the environment discipline, and the operations that are not permitted. A session therefore starts
+        with those constraints in force rather than requiring them to be restated.
+      </p>
+      <pre class="example"><code># General Behavior
+- Always ask clarifying questions before starting a task. Do not make assumptions and proceed.
+- When the task involves building an application, create a PRD together with the user before writing any code.
+
+# Programming Language Preferences
+- Preferred languages: Python, R, Rust.
+- For Python, use Google-style docstrings for all functions and classes.
+
+# Python Environment Rules
+- NEVER use `pip install` directly. Always use `uv` for Python dependency management.
+- When running Python scripts, prefer `uv run python ...` to ensure the correct virtual environment.
+- Never install packages into the system or global Python environment.
+
+# Containers &amp; Environments
+- For R projects, always use a container to run the code unless instructed otherwise.
+- If a project has a `Dockerfile`, use Podman rather than Docker.
+
+# Code Execution
+- Save code in a script before running it. Do not run inline code snippets.
+
+# ML
+- Never apply SMOTE or equivalent oversampling without explicit user approval. Raise the tradeoff first.
+
+# Git Commit Rules
+- Use Conventional Commits. Commit after each logical unit of work.
+- NEVER push hardcoded secrets or API keys. Read credentials from environment variables.</code></pre>
+      <p>
+        Two of these constraints were load-bearing on this project. <i>Always ask clarifying questions</i>
+        prevents an agent selecting a method where the correct action is to ask which method is wanted.
+        <i>For R, use a container</i> is why the doublet-detection step runs in a pinned Bioconductor image
+        rather than against an ambient R installation, which is a precondition for the step to be
+        reproducible.
       </p>
 
-      <h3>A headline number turned out to be an artifact of 39 cells</h3>
+      <h2 id="session-summary">2. The session summary</h2>
       <p>
-        A reviewer flagged that mixing single-cell assays under one raw-count positivity threshold could
-        confound the normal-tissue liabilities. Rather than argue the point, Claude Code went to the raw
-        data and counted: the healthy reference pulled from Tabula Sapiens was 90% 10x 3' v3, but 3.7%
-        Smart-seq2. Recomputing every headline liability assay-matched and donor-robust showed that the
-        published worst liability for PSMA x STEAP1, <span class="data">0.28</span>, was an artifact of
-        <b>39 Smart-seq2 cells from a single donor</b>. Assay-matched and donor-robust, across 5 donors,
-        it is <span class="data">0.17</span>.
+        One file per project, at the repository root. It is the working memory: what the method is, what has
+        been learned, and what has already been done. Claude Code reads it at the start of a session and
+        maintains part of it as it works. The whole design is in <b>who is allowed to edit which section</b>.
+      </p>
+      <pre class="example"><code># SESSION SUMMARY
+
+## How to maintain this file   the contract. Read at the start of a session.
+## Rules                        how we work. The HUMAN curates. The LLM may propose, never edit.
+## Insights                     lessons learned, not facts. The HUMAN curates.
+## Logs                         append-only, LLM-maintained. One dated block per session.
+                                Dead ends prefixed DEAD END: so no session pays for them twice.
+
+Session discipline: at the start, read Rules then Insights. During, commit each logical
+unit and append its Logs line immediately. At the end, leave the tree clean.</code></pre>
+      <p>
+        Rules and Insights are curated by me. The assistant may propose a change but is not permitted to
+        add, reword, or delete one, since an agent that can edit the rules it is evaluated against is
+        evaluating itself. Logs are maintained by the assistant, append-only, and written as the work
+        proceeds rather than reconstructed afterwards, so an interrupted session still leaves a record.
+        Dead ends are logged under a separate prefix so that a discarded approach is not attempted twice.
       </p>
       <p>
-        The correction cut both ways, which is why it is worth stating. The finding got stronger. The
-        negative-control statistic got weaker: the fraction of random surface pairs the benchmark beats
-        fell from 80% to 58%. Both numbers were updated.
+        The Rules are the method. They are pinned across sessions and applied by default:
+      </p>
+      <pre class="example"><code>## Rules   (pinned; the human curates)
+
+#1   Scientific accuracy first, above demo appeal. A correct understated result beats a
+     compelling overstated one. When a claim is refuted, retract it across every surface.
+#2   The human sets strategy and framing; the LLM executes, verifies, and reports faithfully.
+#3   Reproducibility is non-negotiable. All code runs in a controlled environment: a uv venv,
+     a Podman container, or an nf-core pipeline. Never a system interpreter.
+#5   This file is public. Never put secrets in it.
+#6   Work like a scientist: literature, implement, critically review, report.
+#7   Assert nothing you have not checked against a control that could fail.
+#8   Score per patient, then summarize. Never pool cells. Any pooled score is a bug.
+#9   Positivity is not `count > 0`. A scRNA zero is not proof of absence.
+#10  Scripts write the committed tables; the report only reads and draws them.
+#12  Claim discipline. Own the benchmark recovery as a trust signal, not a discovery.
+#13  The positive-control gate is sacred. If PSMA-PSCA does not recover, the scoring is
+     wrong and no nomination is trustworthy.
+#15  Claude Code orchestrates, Claude Science verifies. Log every handoff, including
+     disagreements. An empty disagreements column is a weak submission.
+#16  Commit during the work, one logical unit per commit. Append one Logs line after each.</code></pre>
+      <p>
+        Each of these is visible in the artefacts. Rule 8 is why the explorer shows the pooled fraction and
+        the per-patient median side by side, and why they differ. Rule 10 is why every figure regenerates
+        from a committed table rather than being a saved image. Rule 13 is why the benchmark appears before
+        the nomination. Rule 15 is why the tooling log has a disagreements column.
       </p>
 
-      <h3>The pair that was beating our lead was cheating</h3>
+      <h2 id="tooling-log">3. The tooling log</h2>
       <p>
-        A second review alleged that HPN and EPCAM leak into the cohort's malignant-cell label. The label
-        is built from the Liu and Wallace prostate-cancer expression signatures plus CopyKAT aneuploidy,
-        so any panel gene inside those signatures would be scoring against a label it helped define. A
-        crude check was inconclusive, confounded by tumor purity, so Claude Code delegated the decisive
-        question to a subagent, which read the study's own signature CSVs from the authors' GitHub.
+        <span class="data">docs/claude_tooling_log.md</span> is a dated table, one row per meaningful handoff:
+        what was asked, what came back, and <b>what changed as a result</b>. The last column is the one that
+        matters. A handoff that changed nothing is noise; a handoff that changed the analysis is evidence.
       </p>
       <p>
-        HPN is in both signatures. EPCAM is in Liu. FOLH1, STEAP1, and PSCA are in neither. Consequence:
-        <b>49 pairs were excluded as confounded, and STEAP1 x HPN, previously reported as a co-lead, was
-        demoted.</b> With the leaked pair removed, PSMA x STEAP1 became Pareto-non-dominated. The pair
-        that had been dominating our lead was the contaminated one.
-      </p>
-
-      <h2>Where Claude was wrong</h2>
-      <p>
-        One of Claude Code's own research subagents reported that Python 3.13 would be fine for the
-        stack. It was not. A <span class="data">numpy&gt;=2.2</span> constraint dragged in an ancient
-        <span class="data">numba</span> 0.53.1 that supports neither 3.11 nor 3.13, and the environment
-        would not resolve. Claude Code caught its own agent's claim, pinned Python 3.11 with
-        <span class="data">numpy&lt;2</span>, and the wheels resolved. An agent's confident answer is
-        still just an answer.
+        The log records the cases where a tool was wrong and where I overruled it, because a tool that is
+        only ever agreed with has not been tested. Entries on this project include a database rejected as
+        unreliable for a specific set of genes, an environment claim from a research agent contradicted by
+        the dependency resolver, and a metric I corrected myself because it would have passed a marker
+        expressed across all prostate cells, malignant and benign alike. The log is where the work was
+        adjudicated, and by whom.
       </p>
 
-      <h2>Where Claude overruled a data source</h2>
+      <h2 id="claude-science">4. How the Claude Science tasks are organised</h2>
       <p>
-        The Human Protein Atlas immunofluorescence localization calls PSMA, STEAP1, STEAP2, and CD276
-        <i>not plasma membrane</i>. These are false negatives for antigens with binders in the clinic.
-        Claude Code therefore refused to use HPA localization as a hard surface filter, and used curated
-        membrane topology instead, keeping HPA only for what it is good for: demoting prostein (SLC45A3),
-        which really is intracellular and vesicular, out of nomination. A database being authoritative
-        does not make it right about a specific gene.
+        Claude Science is a browser workbench with literature access and data connectors. It reaches GTEx, the
+        Human Protein Atlas, and the trials registry, none of which the pipeline touches. I use it for the
+        evidence that is not in a count matrix. The organisation is the part worth copying:
       </p>
+      <pre class="example"><code>claude_life_science/
+  tasks/     cs01 ... cs10   the prompt, committed BEFORE the run
+  outputs/   cs03, cs08      the answer, its backing tables, and its DOIs
+  scripts/   cs03, cs08      the workbench kernel code, reconstructed
 
-      <h2>Where I overruled Claude</h2>
+CS01  Methods for AND-gate dual-marker discovery
+CS02  Methods for NOT-gate / inhibitory-logic targets
+CS03  Approved and clinical dual-target / logic-gated prostate therapies
+CS04  Clinically validated single prostate surface antigens and their binders
+CS05  Key single-cell prostate cancer datasets
+CS06  Key proteomics / surface-proteomics datasets
+CS07  Antigen expression shifts in mCRPC and neuroendocrine disease
+CS08  Normal-tissue expression liabilities of the candidate antigens
+CS09  Statistical best practices for single-cell target ranking
+CS10  Adversarial review of the report</code></pre>
       <p>
-        The safety metric was, at first, purely extra-prostatic: how much of the gate fires outside the
-        prostate. I flagged that this would happily pass a marker expressed across <i>every</i> prostate
-        cell, malignant and benign alike. Such a target destroys the whole gland and is not
-        tumor-specific at all, and the metric could not see it.
+        Three rules govern it, and they exist to stop a fluent answer becoming a finding.
       </p>
-      <p>
-        That added the <b>matched benign-prostate control</b>: adjacent-benign epithelium from the same
-        patients, so a nomination must separate malignant from benign prostate and not merely from other
-        organs. It is now one of the four things this work claims as a contribution, and it exists because
-        the metric was wrong and a human said so.
-      </p>
-
-      <h2>What Claude built</h2>
       <ol class="steps">
         <li>
-          <b>Chose the indication.</b> Compared prostate, ovarian, and colorectal against the constraints,
-          verified the current clinical programs by web search, and landed on prostate as the only solid
-          tumor carrying a rediscoverable AND-gate positive control.
+          <b>The prompt is committed before the run.</b> The task file enters git before the workbench
+          session. The question is therefore on the record and cannot be revised after the answer is known.
         </li>
         <li>
-          <b>Swapped the discovery cohort before a line of analysis was written.</b> Three read-only
-          Explore agents ran in parallel to verify data access. They found the planned HuPSA set was a
-          3.8 GB Seurat object needing conversion, while a 24-patient CELLxGENE atlas was a ready-annotated
-          h5ad. The plan changed to fit the data.
+          <b>The answer ships with its sources.</b> Each committed output carries a
+          <span class="data">literature_refs.csv</span> mapping every claim to a DOI, so a reader can check it
+          without asking me.
         </li>
         <li>
-          <b>Read the data rather than assuming it.</b> Inspected the tumor object's own annotations
-          instead of guessing a malignant definition, which surfaced the authors' copy-number and
-          signature call and replaced a much weaker "luminal cells are malignant" proxy.
-        </li>
-        <li>
-          <b>Removed doublets before scoring, not after.</b> Two cells captured as one would fake exactly
-          the co-expression an AND gate looks for. Claude Code built a Python to R and back handoff into a
-          Bioconductor scDblFinder container under rootless Podman. It removed 4.8% of cells, and
-          re-scoring on the singlets moved the nominated pair's coverage by at most one percentage point,
-          so the finding is not a doublet artifact.
-        </li>
-        <li>
-          <b>Rejected a pipeline for being unfinished.</b> Evaluated nf-core/scdownstream, found it
-          pre-release with functional code only on <span class="data">dev</span>, and documented it as the
-          future path rather than building on it.
-        </li>
-        <li>
-          <b>Verified every citation against a primary source.</b> A subagent confirmed the tumor atlas is
-          now published in Cancer Research, and that ABBV-969, the dual PSMA/STEAP1 conjugate a reviewer
-          raised, binds either antigen and so is OR-like. That verification is why the report narrows its
-          own novelty claim to the AND framing rather than the pair.
+          <b>A workbench answer is a lead, not a result.</b> The directory's own README says it: these are
+          literature syntheses, nothing regenerates them, and they are not inputs to any committed analysis. A
+          claim enters the report <i>only</i> after it has been checked against the cited primary source.
         </li>
       </ol>
-
-      <h2>The record</h2>
       <p>
-        Every handoff above is logged with a date and an outcome in
-        <span class="data">docs/claude_tooling_log.md</span> in the science repository, including the ones
-        that went nowhere. The <a href="/report">report</a> is where the claims live, and it carries the
-        corrections these reviews forced.
+        Only the report-usable subset is committed. Two were: the clinical dual-target landscape, which is the
+        evidence behind the report's refusal to claim the target pair as novel, and the normal-tissue liability
+        review, which brought protein-level facts the single-cell data cannot contain, including membrane
+        polarity and antibody-assay false negatives. The rest stayed local by the same policy.
+      </p>
+
+      <h2 id="split">5. What I use each one for</h2>
+      <p>
+        They fail in opposite directions, which is the reason to run both.
+      </p>
+
+      <div class="vs-grid">
+        <div class="vs-card">
+          <h3>Claude Code</h3>
+          <p class="vs-role">The instrument. The code and the compute, under my hand.</p>
+          <p class="vs-label good">Why</p>
+          <ul>
+            <li><b>I pick the stack.</b> <span class="data">uv</span> for Python, Podman for the R containers, the AWS CLI for the deployment. Down to the image digest.</li>
+            <li><b>The code is on disk.</b> Every number in the report binds to a committed table written by a script I can read, rerun, and diff. Auditing is the default, not an extra step.</li>
+            <li><b>It is configurable.</b> The instruction file carries the constraints; the session summary carries the method. It inherits my standards instead of inventing its own.</li>
+          </ul>
+          <p class="vs-label bad">The cost</p>
+          <ul>
+            <li><b>No data access out of the box.</b> Every database path is one I built.</li>
+          </ul>
+        </div>
+
+        <div class="vs-card">
+          <h3>Claude Science</h3>
+          <p class="vs-role">The reading. Literature and databases the pipeline never touches.</p>
+          <p class="vs-label good">Why</p>
+          <ul>
+            <li><b>The connectors.</b> GTEx, the Human Protein Atlas, OpenAlex, the trials registry, all one query away. No keys to wire, no parsers to write.</li>
+            <li><b>It sees what the data cannot contain.</b> Membrane polarity, epitope accessibility, antibody-assay false negatives. None of that is in a count matrix.</li>
+          </ul>
+          <p class="vs-label bad">The cost</p>
+          <ul>
+            <li><b>Its own compute.</b> The scan, the container work, and the replication cohort all needed a real machine.</li>
+            <li><b>The code is not exposed by default.</b> The conclusion is visible, the script that produced it is not. A workbench claim therefore requires a citation to a primary source before it enters the report.</li>
+          </ul>
+        </div>
+      </div>
+
+      <p>
+        The full handoff record, including the rows where a tool was overruled, is in
+        <a href="https://github.com/wguesdon/dual-marker-discovery/blob/main/docs/claude_tooling_log.md" target="_blank" rel="noopener"><span class="data">docs/claude_tooling_log.md</span></a>.
+        The session summary, the rules, and the Claude Science task files are all in the
+        <a href="https://github.com/wguesdon/dual-marker-discovery" target="_blank" rel="noopener">science repository</a>,
+        which is public. The <a href="/report/">report</a> is where the claims live.
       </p>
     </div>
   </section>
 </Base>
+
+<style>
+  .example {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 1rem 1.2rem;
+    margin: 1.1rem 0 1.5rem;
+    overflow-x: auto;
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.82rem;
+    line-height: 1.7;
+    color: var(--ink);
+  }
+
+  h2[id] { scroll-margin-top: 4.5rem; }
+
+  .vs-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.1rem;
+    margin: 1.4rem 0 1.6rem;
+  }
+  .vs-card {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.3rem 1.4rem 1.1rem;
+    box-shadow: var(--shadow);
+  }
+  .vs-card h3 { margin: 0 0 0.25rem; }
+  .vs-role {
+    margin: 0 0 1.1rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .vs-label {
+    margin: 1.1rem 0 0.5rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .vs-label:first-of-type { margin-top: 0; }
+  .vs-label.good { color: var(--accent); }
+  .vs-label.bad { color: var(--ink-2); }
+  .vs-card ul {
+    margin: 0;
+    padding-left: 1.1rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .vs-card li {
+    font-size: 0.92rem;
+    line-height: 1.6;
+    color: var(--ink-2);
+  }
+  .vs-card li b { color: var(--ink); }
+
+  @media (max-width: 760px) {
+    .vs-grid { grid-template-columns: 1fr; }
+  }
+</style>

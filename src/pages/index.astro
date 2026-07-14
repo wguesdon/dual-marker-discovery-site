@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 import d from '../data/site_data.json';
 import { pct, frac, fold, count, short, cellType } from '../lib/fmt.js';
 
-const title = 'Dual-marker discovery — combinatorial surface targets in prostate cancer';
+const title = 'Per-patient discovery of combinatorial cell-surface targets in prostate cancer';
 const description =
-  'A per-patient single-cell scan for pairs of surface markers a logic-gated therapy could use to hit prostate cancer and spare healthy tissue, anchored on recovery of the PSMA-PSCA benchmark.';
+  'A per-patient single-cell scan of a curated surface-marker panel for AND-gate and NOT-gate pairs that discriminate malignant prostate cells from healthy human cell types, benchmarked against PSMA-PSCA. Transcript-level rankings, not evidence of therapeutic safety.';
 
 const folh1 = d.control.find((c) => c.entity.startsWith('FOLH1 (single)'));
 const psca = d.control.find((c) => c.entity.startsWith('PSCA (single)'));
@@ -17,18 +17,30 @@ const nFrontier = d.surface_frontier.length;
   <section class="hero">
     <div class="container narrow">
       <p class="eyebrow">Built with Claude: Life Sciences hackathon<br />Research track · 2026</p>
-      <h1>Two antigens that are each unsafe alone become selective when a therapy requires both.</h1>
+      <h1>Per-patient discovery of combinatorial cell-surface targets in prostate cancer</h1>
       <p class="lede">
-        PSMA is detected in {pct(folh1.worst_healthy_xprostate)} of cells in the worst healthy tissue it
-        touches. PSCA reaches {pct(psca.worst_healthy_xprostate)}. Requiring <b>both</b> at once brings the
-        worst extra-prostatic co-detection down to {pct(gate.worst_healthy_xprostate)}. That collapse is
-        the rationale behind the split-signal CAR, and this scan reproduces it from single-cell data
-        alone. Recovering it is what earns the ranking behind it the right to be read.
+        A curated panel of {d.study.n_panel_genes_scanned} cell-surface markers, scanned in single-cell
+        data for pairs that discriminate malignant prostate cells from every healthy human cell type,
+        under AND and NOT logic. Pairs are scored <b>within each patient</b> and then summarized across
+        {d.study.n_patients_scored} of them, against a matched benign-prostate control and an
+        assay-matched, donor-robust healthy reference of {count(d.study.n_healthy_cells)} cells. The
+        preclinically validated PSMA-PSCA pair is recovered as a positive control before any new pair is
+        nominated.
+      </p>
+      <p class="lede" style="margin-top:0.8rem">
+        These are transcript-level, hypothesis-generating rankings, not evidence of therapeutic safety.
+        Establishing a target would require protein-level, same-cell measurement in the tumor and in its
+        worst normal tissues, by CITE-seq, multiplex immunohistochemistry, or dual-colour flow cytometry,
+        together with surface proteomics to confirm epitope accessibility. None of that was performed here.
       </p>
       <div class="btnrow">
-        <a class="btn primary" href="/explore">Explore with Claude &rarr;</a>
-        <a class="btn ghost" href="/report">Read the report</a>
-        <a class="btn ghost" href="/challenge">The data and the method</a>
+        <a class="btn primary" href="/explore/">Explore with Claude &rarr;</a>
+        <a class="btn ghost" href="/report/">Report</a>
+      </div>
+      <div class="btnrow repos">
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery" target="_blank" rel="noopener">Main repository</a>
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery-site" target="_blank" rel="noopener">Website repository</a>
+        <a class="btn ghost" href="https://github.com/wguesdon/dual-marker-discovery-app" target="_blank" rel="noopener">App repository</a>
       </div>
     </div>
   </section>
@@ -37,56 +49,86 @@ const nFrontier = d.surface_frontier.length;
     <div class="container">
       <div class="stats">
         <div class="stat">
-          <div class="n">{frac(gate.worst_healthy_xprostate)}</div>
-          <div class="l">worst extra-prostatic co-detection of the PSMA-PSCA AND gate, from {frac(psca.worst_healthy_xprostate)} for PSCA alone</div>
+          <div class="n">{d.study.n_panel_genes_scanned}</div>
+          <div class="l">curated cell-surface markers, all pairs scored under AND and NOT logic</div>
         </div>
         <div class="stat">
           <div class="n">{d.study.n_patients_scored}</div>
-          <div class="l">patients, each scored on their own cells, so no one donor can carry a pair</div>
+          <div class="l">patients scored, each within their own malignant cells, then summarized across patients</div>
         </div>
         <div class="stat">
           <div class="n">{short(d.study.n_healthy_cells)}</div>
-          <div class="l">healthy cells, {d.study.n_healthy_celltypes} cell types across {d.study.n_healthy_tissues} tissues, as the safety denominator</div>
+          <div class="l">healthy cells, {d.study.n_healthy_celltypes} cell types across {d.study.n_healthy_tissues} tissues, forming the normal-tissue reference</div>
         </div>
         <div class="stat">
-          <div class="n">{d.study.n_panel_genes_scanned}</div>
-          <div class="l">curated surface markers scanned, every pair, under both gate logics</div>
+          <div class="n">{frac(gate.worst_healthy_xprostate)}</div>
+          <div class="l">highest fraction of PSMA/PSCA double-positive cells in any normal extra-prostatic
+            population. Each marker alone reaches {frac(folh1.worst_healthy_xprostate)} (PSMA) and
+            {' '}{frac(psca.worst_healthy_xprostate)} (PSCA)</div>
         </div>
       </div>
     </div>
   </section>
 
   <section class="block">
+    <div class="container">
+      <div class="cards">
+        <a class="card" href="/challenge/">
+          <span class="k">Setup</span>
+          <h3>Challenge &amp; data</h3>
+          <p>The background, the single-cell atlases, and how a candidate pair is scored.</p>
+        </a>
+        <a class="card" href="/claude/">
+          <span class="k">Method</span>
+          <h3>How I used Claude</h3>
+          <p>The instruction file, the session summary, and how the Claude Science tasks are organised.</p>
+        </a>
+        <a class="card" href="/report/">
+          <span class="k">Science</span>
+          <h3>Report</h3>
+          <p>Abstract, methods, results, robustness, and limitations.</p>
+        </a>
+        <a class="card" href="/explore/">
+          <span class="k">Tool</span>
+          <h3>Explore with Claude</h3>
+          <p>Colour cells by marker combination and query the committed tables.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
     <div class="container narrow">
-      <h2>The problem</h2>
+      <h2>Background</h2>
       <p>
-        Few surface antigens are truly absent from every healthy tissue. That is why single-antigen
-        CAR-T, T-cell engagers, and antibody-drug conjugates struggle in solid tumors: the antigen that
-        marks the cancer also marks something you cannot afford to destroy. The toxicity is on target. It
-        is the target that is the problem.
+        Antigen-directed therapy in solid tumors is limited by on-target, off-tumor activity: few tumor
+        antigens are absent from every healthy tissue, so single-target CAR-T, T-cell engagers, and
+        antibody-drug conjugates carry a normal-tissue liability. Logic-gated targeting requires two
+        conditions before a cell is engaged, which can recover the missing specificity.
       </p>
       <p>
-        Logic-gated targeting requires two conditions before a cell is engaged, which can recover the
-        missing specificity. An <b>AND gate</b> engages only a cell carrying both markers. A
-        <b>NOT gate</b> engages on an activator unless a blocker marks the cell as healthy, and it is
-        directional: swapping the two markers is a different hypothesis, not the same one.
+        An <b>AND gate</b> engages a cell only when both markers are present. A <b>NOT gate</b> engages a
+        cell positive for an activator unless a blocker is also present. NOT gates are directed: the
+        activator and the blocker are not interchangeable, so each ordered combination is a distinct
+        hypothesis and is scored separately.
       </p>
 
-      <h2>The benchmark</h2>
+      <h2>Positive control</h2>
       <p>
-        PSMA (FOLH1) and PSCA are a preclinically validated split-signal CAR pair. If the scoring is
-        sound, it should reproduce the reason why. It does. Each antigen alone is broadly detected
-        outside the prostate, and requiring both collapses the worst case:
+        PSMA (FOLH1) and PSCA are a preclinically validated split-signal AND-gate CAR pair, so the scan
+        can be checked against a known answer. Each antigen alone is broadly co-detected outside the
+        prostate. Requiring both reduces the worst-case extra-prostatic co-detection to below either
+        single marker.
       </p>
 
       <div class="tw">
         <table class="fig">
           <thead>
             <tr>
-              <th>Requirement</th>
-              <th class="num">Malignant coverage<br /><span class="sub">median across patients</span></th>
-              <th class="num">Worst healthy tissue<br /><span class="sub">outside the prostate</span></th>
-              <th>Where that liability sits</th>
+              <th>Marker requirement</th>
+              <th class="num">Malignant cells positive<br /><span class="sub">median across patients</span></th>
+              <th class="num">Normal cells positive<br /><span class="sub">highest extra-prostatic population</span></th>
+              <th>Cell type</th>
             </tr>
           </thead>
           <tbody>
@@ -104,27 +146,26 @@ const nFrontier = d.surface_frontier.length;
 
       <div class="callout">
         <p>
-          <b>Read this as a trust signal, not a discovery.</b> The recovery is a safety collapse, not a
-          coverage result: the gate's own malignant coverage is low ({frac(gate.tumor_median)}), because
-          PSCA transcript is dropout-prone. The panel contained the known pair and the analysis was not
-          preregistered, so this is not a blind rediscovery. Against
-          {' '}{d.negative_control.n_random_pairs} random surface pairs, the benchmark is more selective
-          than {pct(d.negative_control.frac_random_pairs_worse)} of them, which the report calls a weak
-          signal and a sanity check rather than proof of specificity: a pair can also look clean simply by
-          covering very little tumor.
+          The benchmark is recovered on the reduction in worst-case extra-prostatic positivity, not on
+          coverage. Malignant co-detection of PSMA and PSCA is low ({frac(gate.tumor_median)}), consistent
+          with limited PSCA transcript detection in this dataset. The panel contained the known pair and
+          the analysis was not preregistered, so recovery is not a blind rediscovery. Against
+          {' '}{d.negative_control.n_random_pairs} random surface pairs, the benchmark scores higher on
+          extra-prostatic selectivity than {pct(d.negative_control.frac_random_pairs_worse)} of them. That
+          comparison is a sanity check rather than evidence of specificity, since a pair can also score
+          well by covering very few malignant cells.
         </p>
       </div>
 
-      <h2>The nominated pair</h2>
+      <h2>Nominated pair</h2>
       <p>
-        With the benchmark reproduced, the same scoring ranks the surface-accessible pairs on a Pareto
-        frontier of per-patient coverage floor against worst-case healthy liability.
-        {' '}<b>{nFrontier} clean pairs</b> sit on that frontier. The one carried forward is
-        {' '}<b>{n.pair.replace('FOLH1', 'PSMA').replace(' + ', ' × ')}</b>, an AND gate, and it is worth
-        being precise about why: it is not the highest-coverage pair on the frontier, nor the lowest-risk.
-        It is the frontier pair with the lowest liability among those with substantial coverage, and it
-        was chosen for the headline because <b>both antigens already have clinical-grade binders</b>. That
-        is a translational judgement laid on top of the frontier, not the output of an optimizer.
+        Pairs are ranked on a Pareto frontier of the per-patient coverage floor against the worst-case
+        extra-prostatic liability. {nFrontier} clean surface-accessible pairs are non-dominated. The pair
+        carried forward is {' '}<b>{n.pair.replace('FOLH1', 'PSMA').replace(' + ', ' × ')}</b>, an AND
+        gate. It is neither the highest-coverage nor the lowest-liability pair on the frontier: it is the
+        frontier pair with the lowest liability among those with substantial coverage, and it was selected
+        because both antigens have clinical-grade binders. That selection is a translational judgement
+        applied on top of the frontier, not the output of an optimizer.
       </p>
 
       <div class="tw">
@@ -151,74 +192,62 @@ const nFrontier = d.surface_frontier.length;
             <tr>
               <td>Malignant minus matched benign prostate</td>
               <td class="num">{frac(n.malignant_vs_benign)}</td>
-              <td>it marks the cancer, not the whole gland</td>
+              <td>discriminates malignant from benign prostate epithelium in the same patients</td>
             </tr>
           </tbody>
         </table>
       </div>
 
       <p>
-        Each marker alone is far more exposed: PSMA reaches {frac(n.single_a_worst_xp)} and STEAP1
-        {' '}{frac(n.single_b_worst_xp)} in their own worst healthy tissue. The gate is what buys the
-        selectivity. But a median coverage of {frac(n.tumor_median)} is not obviously adequate for
-        monotherapy, and whether the residual liability is clinically acceptable cannot be judged from
-        transcript data at all.
+        The single markers carry substantially higher liabilities: PSMA reaches
+        {' '}{frac(n.single_a_worst_xp)} and STEAP1 {frac(n.single_b_worst_xp)} in their respective worst
+        extra-prostatic populations. A median coverage of {frac(n.tumor_median)} is not obviously adequate
+        for monotherapy, and whether the residual liability is clinically acceptable cannot be determined
+        from transcript data.
       </p>
 
-      <h2>What this is not</h2>
+      <h2>Convergence with an independent clinical programme</h2>
       <div class="callout result">
         <p>
-          <b>The pair is not the contribution, and it is not novel.</b> A dual PSMA/STEAP1
-          antibody-drug conjugate (ABBV-969) is already in phase 1, though it binds either antigen, so it
-          is OR-like rather than a strict AND gate. What is offered here is the AND framing and the
-          scoring underneath it: per-patient rather than pooled, against a matched benign-prostate control
-          and an assay-matched, donor-robust healthy reference, with the benchmark reproduced before any
-          new pair is nominated.
+          The scan places PSMA x STEAP1 on the Pareto frontier from the single-cell data alone, with no
+          knowledge of the clinical pipeline. A dual PSMA/STEAP1 antibody-drug conjugate (ABBV-969)
+          independently entered phase 1. That an unsupervised ranking of {d.study.n_panel_genes_scanned}
+          markers converges on a combination a developer selected independently is corroboration that the
+          scoring identifies translationally credible pairs, alongside the recovery of the PSMA-PSCA
+          benchmark.
+        </p>
+        <p style="margin-top:0.7rem">
+          Two boundaries on that claim. ABBV-969 binds either antigen, so it supports the targetability of
+          PSMA and STEAP1 individually and does not test AND-gate logic. And the panel is curated from
+          antigens with existing clinical interest, so the candidate pool was already enriched for
+          credible targets. The pair is therefore not a novel target proposal; the contribution is the
+          AND framing and the scoring beneath it.
         </p>
       </div>
+
+      <h2>Limitations</h2>
       <p>
         These are <b>transcript-level, hypothesis-generating rankings, not evidence of therapeutic
-        safety</b>. Single-cell RNA measures mRNA, not surface antigen density, epitope availability,
-        binding, or shedding. Same-cell surface co-expression needs CITE-seq, multiplex IHC, or
-        dual-colour flow to confirm, and none of that was done here.
+        safety</b>. Single-cell RNA measures mRNA, not surface antigen density, extracellular epitope
+        availability, binding affinity, or shedding. Same-cell surface co-expression requires CITE-seq,
+        multiplex IHC, or dual-colour flow to confirm; none was performed here.
       </p>
       <p>
-        The <b>NOT gates are a negative result</b>. No activator-blocker combination in the panel achieved
-        both high malignant coverage and low normal-tissue escape, and the blocker-negative call depends
-        on trusting single-cell dropout. It is reported as a negative result rather than quietly dropped.
+        <b>The NOT gate is a negative result.</b> No activator-blocker combination in the panel achieved
+        both high malignant coverage and low predicted normal-tissue escape. The blocker-negative call
+        additionally depends on single-cell dropout, which is not proof of absence.
       </p>
       <p>
-        The <a href="/report">report states every limitation in full</a> and does not soften them, starting
-        with the fact that the cohort's own malignant label is built from expression signatures, and that
-        this is one cohort of localised, hormone-naive disease.
+        <b>Coverage does not generalize to advanced disease.</b> In an independent cohort, tumor
+        specificity replicates but the nominated pair's coverage is AR-lineage dependent, falling sharply
+        in castration-resistant and neuroendocrine states.
+      </p>
+      <p>
+        The discovery cohort is a single cohort of localised, hormone-naive disease, and its malignant
+        label is the authors' own signature and copy-number call, adopted rather than re-derived. The
+        <a href="/report/">report</a> states the full set of limitations.
       </p>
     </div>
   </section>
 
-  <section class="block">
-    <div class="container">
-      <div class="cards">
-        <a class="card" href="/challenge">
-          <span class="k">The setup</span>
-          <h3>Challenge &amp; data</h3>
-          <p>The biological problem, the atlases, and how a pair is actually scored.</p>
-        </a>
-        <a class="card" href="/claude">
-          <span class="k">The process</span>
-          <h3>How I used Claude</h3>
-          <p>What Claude built, what it caught, what it was overruled on, and what it retracted.</p>
-        </a>
-        <a class="card" href="/report">
-          <span class="k">The science</span>
-          <h3>The report</h3>
-          <p>Abstract, methods, results, and the limitations stated plainly.</p>
-        </a>
-        <a class="card" href="/explore">
-          <span class="k">The tool</span>
-          <h3>Explore with Claude</h3>
-          <p>Browse the ranked pairs and ask a grounded Claude agent about any of them.</p>
-        </a>
-      </div>
-    </div>
-  </section>
 </Base>
